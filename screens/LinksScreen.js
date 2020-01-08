@@ -15,7 +15,7 @@ export default function LinksScreen() {
 }
 
 LinksScreen.navigationOptions = {
-  title: 'Links',
+  title: 'BIRDS-5: CAD Model',
 };
 
 const styles = StyleSheet.create({
