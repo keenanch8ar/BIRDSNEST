@@ -1,13 +1,23 @@
 import React from 'react';
-import MapView from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import MapView, { AnimatedRegion, Marker } from 'react-native-maps';
+import { StyleSheet, Text, View, Dimensions} from 'react-native';
+
+
 
 export default class HomeScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <MapView style={styles.mapStyle} />
+        <MapView 
+          style={styles.mapStyle} 
+          initialRegion={{
+            latitude: 33.892668,
+            longitude: 130.840288,
+            latitudeDelta: 10.0922,
+            longitudeDelta: 10.0421,}} 
+        />
       </View>
+      
     );
   }
 }

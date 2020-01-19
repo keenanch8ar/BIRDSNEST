@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { SectionList, StyleSheet, Text, View } from 'react-native';
 
-export default class SectionListBasics extends Component {
+export default class SettingsScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
         <SectionList
           sections={[
-            { title: 'D', data: ['Devin', 'Dan', 'Dominic'] },
+            { title: 'D', data: ['Devin', 'Dan', 'Dominic', 'Bob'] },
             { title: 'J', data: ['Jackson', 'James', 'Jillian', 'Jimmy', 'Joel', 'John', 'Julie'] },
             { title: 'K', data: ['Jackson', 'James', 'Jillian', 'Jimmy', 'Joel', 'John', 'Julie'] },
           ]}
@@ -21,6 +21,9 @@ export default class SectionListBasics extends Component {
     );
   }
 }
+SettingsScreen.navigationOptions = {
+  title: 'BIRDS-5: Data',
+};
 
 const styles = StyleSheet.create({
   container: {
