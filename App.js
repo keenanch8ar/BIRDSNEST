@@ -7,6 +7,8 @@ import { Ionicons } from '@expo/vector-icons';
 
 import AppNavigator from './navigation/AppNavigator';
 
+
+
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
 
@@ -43,7 +45,6 @@ async function loadResourcesAsync() {
     }),
   ]);
 }
-
 
 function handleLoadingError(error) {
   // In this case, you might want to report the error to your error reporting
