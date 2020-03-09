@@ -39,7 +39,14 @@
         "ACCESS_FINE_LOCATION",
         "CAMERA"
       ]
-    }
+    },
+    "androidNavigationBar": {
+      "visible": true,
+      "barStyle": "dark-content",
+      "backgroundColor": "#000000"
+    },
+    "androidStatusBarColor": "#1b1b1b", 
+    "androidStatusBar": { "barStyle": "light-content", "backgroundColor": "#1b1b1b" }
 
   }
 }

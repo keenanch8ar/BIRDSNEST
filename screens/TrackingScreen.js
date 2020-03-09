@@ -24,6 +24,13 @@ export default class TrackingScreen extends React.Component {
 
 TrackingScreen.navigationOptions = {
   title: 'BIRDS-5: Tracking',
+  headerStyle: {
+    backgroundColor: '#131a20',
+  },
+  headerTintColor: '#fff',
+  headerTitleStyle: {
+    fontWeight: 'bold',
+  },
 };
 
 const styles = StyleSheet.create({

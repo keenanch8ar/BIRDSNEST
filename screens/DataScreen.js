@@ -221,6 +221,13 @@ export default class DataScreen extends Component {
 }
 DataScreen.navigationOptions = {
 	title: 'BIRDS-5: Data',
+	headerStyle: {
+		backgroundColor: '#131a20',
+	  },
+	  headerTintColor: '#fff',
+	  headerTitleStyle: {
+		fontWeight: 'bold',
+	  },
 };
 const styles = StyleSheet.create({
 	dataContainer: {
