@@ -4,9 +4,10 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import TrackingScreen from '../screens/TrackingScreen';
+import CADScreen from '../screens/CADScreen';
+import DataScreen from '../screens/DataScreen';
+import GalleryScreen from '../screens/GalleryScreen';
 
 
 const config = Platform.select({
@@ -14,65 +15,77 @@ const config = Platform.select({
   default: {},
 });
 
-const HomeStack = createStackNavigator(
+const TrackingStack = createStackNavigator(
   {
-    Home: HomeScreen,
+    Tracking: TrackingScreen,
   },
   config
 );
 
-HomeStack.navigationOptions = {
+TrackingStack.navigationOptions = {
   tabBarLabel: 'Tracking',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
+    <TabBarIcon focused={focused} name={ Platform.OS === 'ios' ? `ios-information-circle${focused ? '' : '-outline'}` : 'md-compass' }/>
   ),
 };
 
-HomeStack.path = '';
+TrackingStack.path = '';
 
-const LinksStack = createStackNavigator(
+const CADStack = createStackNavigator(
   {
-    Links: LinksScreen,
+    CAD: CADScreen,
   },
   config
 );
 
-LinksStack.navigationOptions = {
+CADStack.navigationOptions = {
   tabBarLabel: 'CAD Model',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'} />
+    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-cube'} />
   ),
 };
 
-LinksStack.path = '';
+CADStack.path = '';
 
-const SettingsStack = createStackNavigator(
+const DataStack = createStackNavigator(
   {
-    Settings: SettingsScreen,
+    Data: DataScreen,
   },
   config
 );
 
-SettingsStack.navigationOptions = {
+DataStack.navigationOptions = {
   tabBarLabel: 'Data',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'} />
+    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-podium'} />
   ),
 };
 
-SettingsStack.path = '';
+DataStack.path = '';
+
+
+const GalleryStack = createStackNavigator(
+  {
+    Gallery: GalleryScreen,
+  },
+  config
+);
+
+GalleryStack.navigationOptions = {
+  tabBarLabel: 'Gallery',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'folder-multiple-image' : 'md-images'} />
+  ),
+};
+
+GalleryStack.path = '';
+
 
 const tabNavigator = createBottomTabNavigator({
-  HomeStack,
-  LinksStack,
-  SettingsStack,
+  TrackingStack,
+  CADStack,
+  DataStack,
+  GalleryStack,
 });
 
 tabNavigator.path = '';

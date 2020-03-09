@@ -36,7 +36,7 @@ console.warn = message => {
 };
 
 
-export default class SettingsScreen extends Component {
+export default class DataScreen extends Component {
 
 
 	constructor(props) {
@@ -55,7 +55,6 @@ export default class SettingsScreen extends Component {
 
 		 this.setState({ isLoading: true });
 		 const items = [];
-
 
 
 		 firebase
@@ -220,7 +219,7 @@ export default class SettingsScreen extends Component {
 		
 	}
 }
-SettingsScreen.navigationOptions = {
+DataScreen.navigationOptions = {
 	title: 'BIRDS-5: Data',
 };
 const styles = StyleSheet.create({

@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Dimensions} from 'react-native';
 
 
 
-export default class HomeScreen extends React.Component {
+export default class TrackingScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
@@ -22,7 +22,7 @@ export default class HomeScreen extends React.Component {
   }
 }
 
-HomeScreen.navigationOptions = {
+TrackingScreen.navigationOptions = {
   title: 'BIRDS-5: Tracking',
 };
 
