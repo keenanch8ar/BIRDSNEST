@@ -79,7 +79,7 @@ export default class SettingsScreen extends Component {
 		const data = this.state.dataFromDatabase;
 
 		if (data && data.length > 0) {
-			console.log("Document timestamp:",data[0]);
+			//console.log("Document timestamp:",data[0]);
 			return (
 			
 				<ScrollView

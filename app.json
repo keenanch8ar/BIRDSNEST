@@ -28,6 +28,11 @@
     },
     "android": {
       "package": "com.kyutech.birdsnest",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyB9pojqHjzHE6ZA4kAtiD3Engj5YFnTtHw"
+        }
+      },
       "versionCode": 1,
       "permissions": [
         "ACCESS_COARSE_LOCATION",
