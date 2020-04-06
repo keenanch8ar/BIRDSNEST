@@ -56,7 +56,7 @@ export default class DataScreen extends Component {
 		 this.setState({ isLoading: true });
 		 const items = [];
 
-
+		 
 		 firebase
 			 .firestore()
 			 .collection("sats")
