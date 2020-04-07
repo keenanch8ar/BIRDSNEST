@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import MapView, { AnimatedRegion, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity} from 'react-native';
+import ActionButton from 'react-native-action-button';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const defaultRegion = {
   latitude: 33.892668,
@@ -27,6 +29,7 @@ export default class TrackingScreen extends Component {
   render() {
 
     return (
+      <View style={styles.container}>
         <MapView
           provider={PROVIDER_GOOGLE}
           showsUserLocation={true}
@@ -36,7 +39,27 @@ export default class TrackingScreen extends Component {
           initialRegion={this.state.region}
           onMapReady={this.setMargin}
         />
-      
+
+        <ActionButton
+          buttonColor='#3498db'
+          renderIcon={active => active ? (<Icon name="md-locate" style={styles.actionButtonIcon} /> ) : (<Icon name="md-locate" style={styles.actionButtonIcon} />)}
+          offsetX={15}
+          offsetY={90}
+          fixNativeFeedbackRadius={true}
+          userNativeFeedback={true}
+          onPress={() => { console.log("hi") }}
+        />
+
+        <ActionButton
+          buttonColor='#ffbb00'
+          renderIcon={active => active ? (<Icon name="md-cube" style={styles.actionButtonIcon} />) : (<Icon name="md-cube" style={styles.actionButtonIcon} />)}
+          offsetX={15}
+          offsetY={15}
+          fixNativeFeedbackRadius={true}
+          userNativeFeedback={true}
+          onPress={() => { console.log("hello") }}
+        />
+      </View>
     );
   }
 }
@@ -57,7 +80,6 @@ TrackingScreen.navigationOptions = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: "absolute",
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
