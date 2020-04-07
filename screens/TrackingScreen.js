@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
 import MapView, { AnimatedRegion, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions} from 'react-native';
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity} from 'react-native';
 
 const defaultRegion = {
   latitude: 33.892668,
   longitude: 130.840288,
-  latitudeDelta: 0.01,
-  longitudeDelta: 0.01,}
+  latitudeDelta: 5,
+  longitudeDelta: 5,}
 
-  export const getCurrentLocation = () => {
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(position => resolve(position), e => reject(e));
-    });
-  };
+
 
 export default class TrackingScreen extends Component {
 
@@ -28,39 +24,18 @@ export default class TrackingScreen extends Component {
     this.setState({mapMargin:0})
     }
 
-  async componentDidMount() {
-
-    return getCurrentLocation().then(position => {
-      if (position) {
-        this.setState({
-          region: {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            latitudeDelta: 0.003,
-            longitudeDelta: 0.003,
-          },
-        });
-      }
-    });
-  }
-
-
   render() {
 
-
     return (
-      <View style={styles.container}>
         <MapView
           provider={PROVIDER_GOOGLE}
           showsUserLocation={true}
           showsMyLocationButton={true}
-          showsCompass={true}
           style={[styles.mapStyle, { marginBottom: this.state.mapMargin }]}
           customMapStyle={MapStyling}
           initialRegion={this.state.region}
           onMapReady={this.setMargin}
         />
-      </View>
       
     );
   }
@@ -82,13 +57,21 @@ TrackingScreen.navigationOptions = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: "absolute",
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
   mapStyle: {
+    flex: 1,
+    backgroundColor: '#fff',
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
+  },
+  actionButtonIcon: {
+    fontSize: 23,
+    height: 25,
+    color: 'white',
   },
 });
 
