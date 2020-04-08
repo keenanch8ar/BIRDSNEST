@@ -3,13 +3,18 @@ import MapView, { AnimatedRegion, Marker, PROVIDER_GOOGLE } from 'react-native-m
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity} from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
+import * as Permissions from 'expo-permissions';
+import * as Location from 'expo-location';
 
 const defaultRegion = {
   latitude: 33.892668,
   longitude: 130.840288,
   latitudeDelta: 5,
-  longitudeDelta: 5,}
+  longitudeDelta: 5,
+}
 
+const isAndroid = (Platform.OS === 'android');
+const userMarkerImage_android = require('../assets/images/user_location_icon_android.png');
 
 
 export default class TrackingScreen extends Component {
@@ -41,9 +46,47 @@ export default class TrackingScreen extends Component {
 
   }
 
-  setMargin = () => {
-    this.setState({mapMargin:0})
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      var _this = this;
+      _this.setState({ locErrorSnackbarVisible: true })
+      setTimeout(function () { _this.setState({ locErrorSnackbarVisible: false }) }, 5000);
     }
+    var location = await Location.getCurrentPositionAsync({});
+    var userLat = location.coords.latitude;
+    var userLong = location.coords.longitude;
+    var userAlt = location.coords.longitude;
+    this.setState({ userLat });
+    this.setState({ userLong });
+    this.setState({ userAlt });
+    this.setState({ gotUserLoc: true });
+    //this.getNextPass(this, userLat, userLong, userAlt, true);
+    this.setState({ showUserLocMarker: true });
+  };
+
+  componentDidMount() {
+    this._getLocationAsync(); //get user location
+  }
+
+  setMargin = () => {
+    this.setState({ mapMargin: 0 })
+  }
+
+  showUserLoc() {
+    this.setState({ lockedToSatLoc: false });
+    this.setState({ showUserLoc: true });
+    let region = {
+      latitude: this.state.userLat,
+      longitude: this.state.userLong,
+      latitudeDelta: 0.05,
+      longitudeDelta: 0.05,
+    }
+    this.map.animateToRegion(region);
+    var _this = this;
+    setTimeout(function(){ _this.userLocMarker.showCallout(); }, 1000);
+  }
 
   render() {
 
@@ -51,13 +94,28 @@ export default class TrackingScreen extends Component {
       <View style={styles.container}>
         <MapView
           provider={PROVIDER_GOOGLE}
+          ref={map => { this.map = map }}
           showsUserLocation={true}
-          showsMyLocationButton={true}
+          showsCompass={true}
+          showsMyLocationButton={false}
           style={[styles.mapStyle, { marginBottom: this.state.mapMargin }]}
           customMapStyle={MapStyling}
           initialRegion={this.state.region}
           onMapReady={this.setMargin}
-        />
+        >
+          <MapView.Marker
+            ref={ref => { this.userLocMarker = ref; }}
+            coordinate={{
+              latitude: this.state.userLat,
+              longitude: this.state.userLong
+            }}
+            image={isAndroid ? userMarkerImage_android : null}
+            opacity={this.state.showUserLocMarker ? 1.0 : 0}
+          >
+            {isAndroid ? null : <Image source={userMarkerImage} style={{ width: 25, height: 25 }} resizeMode="contain" />}
+          </MapView.Marker>
+
+        </MapView>
 
         <ActionButton
           buttonColor='#3498db'
@@ -66,7 +124,7 @@ export default class TrackingScreen extends Component {
           offsetY={90}
           fixNativeFeedbackRadius={true}
           userNativeFeedback={true}
-          onPress={() => { console.log("hi") }}
+          onPress={() => { this.showUserLoc() }}
         />
 
         <ActionButton
@@ -116,7 +174,7 @@ const styles = StyleSheet.create({
   },
 });
 
-var MapStyling = [
+const MapStyling = [
   {
     "elementType": "geometry",
     "stylers": [
