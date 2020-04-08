@@ -16,10 +16,29 @@ export default class TrackingScreen extends Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
+
       region: defaultRegion,
-      mapMargin:1
+      mapMargin:1,
+      mapLat: 0,
+      mapLong: 0,
+      curSatInfo: {lat: 0, lng: 0, height: 0, velocity: 0},
+      lockedToSatLoc: true,
+
+      userLat: 0,
+      userLong: 0,
+      userAlt: 0,
+      userLocErrorSnackbarVisible: false,
+      gotUserLoc: false,
+      showUserLoc: false,
+      showUserLocMarker: false,
+      userNextPass: {max_alt: 0, max_alt_time: 0, rise_azimuth: 0, rise_time: 0, set_azimuth: 0, set_time: 0},
+      userNextPassError: true,
+
     };
+
+
   }
 
   setMargin = () => {
