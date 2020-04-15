@@ -3,6 +3,7 @@ import MapView, { AnimatedRegion, Marker, PROVIDER_GOOGLE } from 'react-native-m
 import { StyleSheet, Text, View, Dimensions} from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 
@@ -12,6 +13,8 @@ const defaultRegion = {
   latitudeDelta: 5,
   longitudeDelta: 5,
 }
+
+
 
 
 const isAndroid = (Platform.OS === 'android');
@@ -49,6 +52,7 @@ export default class TrackingScreen extends Component {
       searchNextPassError: true,
       showSearchLocMarker: false,
       searchErrorSnackbarVisible: false,
+      TLE_Data: "",
     };
 
 
@@ -95,12 +99,40 @@ export default class TrackingScreen extends Component {
     this.setState({ showUserLocMarker: true });
   };
 
+
   componentDidMount() {
     this._getLocationAsync(); //get user location
+    this._getTLE(); //get sat location
+
   }
 
   setMargin = () => {
     this.setState({ mapMargin: 0 })
+  }
+
+  _getTLE() {
+    //axios.get(`https://www.space-track.org/basicspacedata/query/class/tle_latest/ORDINAL/1/NORAD_CAT_ID/25544/format/tle`)
+
+    axios
+      .get('https://www.n2yo.com/rest/v1/satellite/tle/25544&apiKey=U726VS-YUR6BP-5CYTW9-4CT4')
+      .then(res => {
+        var data = res.data.tle;
+        
+        // break the textblock into an array of lines
+        var lines1 = data.split('\n');
+        var lines2 = data.split('\n');
+        // remove one line, starting at the first position
+        lines1.splice(1, 2);
+        lines2.splice(0, 1);
+        // join the array back into a single string
+        var newtext = lines1.concat(lines2);
+
+        this.setState({ TLE_Data: newtext });
+
+        console.log(this.state.TLE_Data[0]);
+        console.log(this.state.TLE_Data[1]);
+      })
+
   }
 
   showUserLoc() {
@@ -134,23 +166,24 @@ export default class TrackingScreen extends Component {
     //this.getNextPass(this, searchLat, searchLong, 0, false);
   }
 
+
   render() {
 
     return (
       <View style={styles.container}>
         <MapView
+          provider={PROVIDER_GOOGLE}
           onMoveShouldSetResponder={() => {
             this.setState({ lockedToSatLoc: false })
             return true
           }}
           onLongPress={e => this.makeSearchMarker(e.nativeEvent.coordinate)}
-          provider={PROVIDER_GOOGLE}
           ref={map => { this.map = map }}
           showsUserLocation={true}
           showsCompass={true}
           showsMyLocationButton={false}
           style={[styles.mapStyle, { marginBottom: this.state.mapMargin }]}
-          customMapStyle={MapStyling}
+          //customMapStyle={MapStyling}
           initialRegion={this.state.region}
           onMapReady={this.setMargin}
         >
@@ -195,7 +228,7 @@ export default class TrackingScreen extends Component {
           offsetY={15}
           fixNativeFeedbackRadius={true}
           userNativeFeedback={true}
-          onPress={() => { console.log("hello") }}
+          //onPress={() => { this.getTLE() }}
         />
       </View>
     );
