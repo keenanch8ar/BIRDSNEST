@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MapView, { AnimatedRegion, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Dimensions} from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Permissions from 'expo-permissions';
@@ -12,6 +12,7 @@ const defaultRegion = {
   latitudeDelta: 5,
   longitudeDelta: 5,
 }
+
 
 const isAndroid = (Platform.OS === 'android');
 const userMarkerImage_android = require('../assets/images/user_location_icon_android.png');
@@ -41,10 +42,38 @@ export default class TrackingScreen extends Component {
       userNextPass: {max_alt: 0, max_alt_time: 0, rise_azimuth: 0, rise_time: 0, set_azimuth: 0, set_time: 0},
       userNextPassError: true,
 
+      searchText: "",
+      searchLat: 0,
+      searchLong: 0,
+      searchNextPass: {max_alt: 0, max_alt_time: 0, rise_azimuth: 0, rise_time: 0, set_azimuth: 0, set_time: 0},
+      searchNextPassError: true,
+      showSearchLocMarker: false,
+      searchErrorSnackbarVisible: false,
     };
 
 
   }
+
+  printDate(date) {
+    // Create an array with the current month, day and time
+      var dateArr = [ date.getMonth() + 1, date.getDate(), date.getFullYear() ];
+    // Create an array with the current hour, minute and second
+      var timeArr = [ date.getHours(), date.getMinutes() ];
+    // Determine AM or PM suffix based on the hour
+      var suffix = ( timeArr[0] < 12 ) ? "AM" : "PM";
+    // Convert hour from military time
+      timeArr[0] = ( timeArr[0] < 12 ) ? timeArr[0] : timeArr[0] - 12;
+    // If hour is 0, set it to 12
+      timeArr[0] = timeArr[0] || 12;
+    // If seconds and minutes are less than 10, add a zero
+      for ( var i = 1; i < 3; i++ ) {
+        if ( timeArr[i] < 10 ) {
+          timeArr[i] = "0" + timeArr[i];
+        }
+      }
+    // Return the formatted string
+      return dateArr.join("/") + " at " + timeArr.join(":") + " " + suffix;
+}
 
 
   _getLocationAsync = async () => {
@@ -88,11 +117,33 @@ export default class TrackingScreen extends Component {
     setTimeout(function(){ _this.userLocMarker.showCallout(); }, 1000);
   }
 
+  makeSearchMarker(location) {
+    var searchLat = location.latitude;
+    var searchLong = location.longitude;
+    this.setState({ searchLat });
+    this.setState({ searchLong });
+    this.setState({ showSearchLocMarker: true})
+    let region = {
+      latitude: searchLat,
+      longitude: searchLong,
+      latitudeDelta: 0.5,
+      longitudeDelta: 0.5,
+    }
+    this.setState({ lockedToSatLoc: false });
+    this.map.animateToRegion(region);
+    //this.getNextPass(this, searchLat, searchLong, 0, false);
+  }
+
   render() {
 
     return (
       <View style={styles.container}>
         <MapView
+          onMoveShouldSetResponder={() => {
+            this.setState({ lockedToSatLoc: false })
+            return true
+          }}
+          onLongPress={e => this.makeSearchMarker(e.nativeEvent.coordinate)}
           provider={PROVIDER_GOOGLE}
           ref={map => { this.map = map }}
           showsUserLocation={true}
@@ -103,7 +154,7 @@ export default class TrackingScreen extends Component {
           initialRegion={this.state.region}
           onMapReady={this.setMargin}
         >
-          <MapView.Marker
+          <Marker
             ref={ref => { this.userLocMarker = ref; }}
             coordinate={{
               latitude: this.state.userLat,
@@ -113,7 +164,17 @@ export default class TrackingScreen extends Component {
             opacity={this.state.showUserLocMarker ? 1.0 : 0}
           >
             {isAndroid ? null : <Image source={userMarkerImage} style={{ width: 25, height: 25 }} resizeMode="contain" />}
-          </MapView.Marker>
+          </Marker>
+
+          <Marker
+            ref={ref => { this.searchLocMarker = ref; }}
+            coordinate={{
+              latitude: this.state.searchLat,
+              longitude: this.state.searchLong
+            }}
+            opacity={this.state.showSearchLocMarker ? 1.0 : 0}
+          >
+          </Marker>
 
         </MapView>
 
