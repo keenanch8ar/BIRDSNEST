@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
+import { getGroundTracks, getLatLngObj } from "tle.js";
 
 const defaultRegion = {
   latitude: 33.892668,
@@ -14,8 +15,19 @@ const defaultRegion = {
   longitudeDelta: 5,
 }
 
+const optionalTimestampMS = 1502342329860;
 
+const TLEStr = '1998-067PA\n1 43552U 98067PA  18203.24282627  .00006515  00000-0  10313-3 0  9994\n2 43552  51.6412 203.9371 0005837 350.6408   9.4476 15.54781596  1354'
 
+const tleArr = [
+  'ISS (ZARYA)',
+  '1 25544U 98067A   17206.18396726  .00001961  00000-0  36771-4 0  9993',
+  '2 25544  51.6400 208.9163 0006317  69.9862  25.2906 15.54225995 67660'
+];
+
+const tle_ISS = `ISS (ZARYA)
+1 25544U 98067A   17206.18396726  .00001961  00000-0  36771-4 0  9993
+2 25544  51.6400 208.9163 0006317  69.9862  25.2906 15.54225995 67660`;
 
 const isAndroid = (Platform.OS === 'android');
 const userMarkerImage_android = require('../assets/images/user_location_icon_android.png');
@@ -52,7 +64,10 @@ export default class TrackingScreen extends Component {
       searchNextPassError: true,
       showSearchLocMarker: false,
       searchErrorSnackbarVisible: false,
+      
       TLE_Data: "",
+      TLE_Ready: false,
+      satCoords: [],
     };
 
 
@@ -103,6 +118,7 @@ export default class TrackingScreen extends Component {
   componentDidMount() {
     this._getLocationAsync(); //get user location
     this._getTLE(); //get sat location
+    
 
   }
 
@@ -110,14 +126,15 @@ export default class TrackingScreen extends Component {
     this.setState({ mapMargin: 0 })
   }
 
-  _getTLE() {
-    //axios.get(`https://www.space-track.org/basicspacedata/query/class/tle_latest/ORDINAL/1/NORAD_CAT_ID/25544/format/tle`)
+
+
+  _getTLE(_this) {
 
     axios
-      .get('https://www.n2yo.com/rest/v1/satellite/tle/25544&apiKey=U726VS-YUR6BP-5CYTW9-4CT4')
+      .get('https://www.n2yo.com/rest/v1/satellite/tle/44331&apiKey=U726VS-YUR6BP-5CYTW9-4CT4')
       .then(res => {
         var data = res.data.tle;
-        
+
         // break the textblock into an array of lines
         var lines1 = data.split('\n');
         var lines2 = data.split('\n');
@@ -125,15 +142,41 @@ export default class TrackingScreen extends Component {
         lines1.splice(1, 2);
         lines2.splice(0, 1);
         // join the array back into a single string
-        var newtext = lines1.concat(lines2);
+        const name = ["UGUISU"];
+        var temp = name.concat(lines1);
+        var newtext = temp.concat(lines2);
 
         this.setState({ TLE_Data: newtext });
 
-        console.log(this.state.TLE_Data[0]);
-        console.log(this.state.TLE_Data[1]);
+        this.setState({ TLEReady: true });
+
+        this._getSatCoords();
+
+
+
       })
 
-  }
+  };
+
+  _getSatCoords = async () => {
+
+    const threeOrbitsArr = await getGroundTracks({
+      tle: this.state.TLE_Data,
+    
+      // Resolution of plotted points.  Defaults to 1000 (plotting a point once for every second).
+      stepMS: 1000,
+    
+      // Returns points in [lng, lat] order when true, and [lng, lat] order when false.
+      isLngLatFormat: false
+    });
+
+    this.setState({ satCoords: threeOrbitsArr });
+
+    
+  };
+
+
+
 
   showUserLoc() {
     this.setState({ lockedToSatLoc: false });
@@ -165,6 +208,7 @@ export default class TrackingScreen extends Component {
     this.map.animateToRegion(region);
     //this.getNextPass(this, searchLat, searchLong, 0, false);
   }
+
 
 
   render() {
