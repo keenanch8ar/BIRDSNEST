@@ -31,7 +31,7 @@ const tle_ISS = `ISS (ZARYA)
 
 const isAndroid = (Platform.OS === 'android');
 const userMarkerImage_android = require('../assets/images/user_location_icon_android.png');
-const satMarkerImage_android = require('../assets/images/equisat_logo_white_android.png');
+const satMarkerImage_android = require('../assets/images/Picture1.png');
 
 
 
