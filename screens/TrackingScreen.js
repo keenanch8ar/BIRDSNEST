@@ -15,7 +15,7 @@ const defaultRegion = {
   longitudeDelta: 5,
 }
 
-const optionalTimestampMS = 1502342329860;
+const AUDIBLE_CIRCLE_RADIUS_M = 1000 * 2000;
 
 const TLEStr = '1998-067PA\n1 43552U 98067PA  18203.24282627  .00006515  00000-0  10313-3 0  9994\n2 43552  51.6412 203.9371 0005837 350.6408   9.4476 15.54781596  1354'
 
@@ -31,6 +31,8 @@ const tle_ISS = `ISS (ZARYA)
 
 const isAndroid = (Platform.OS === 'android');
 const userMarkerImage_android = require('../assets/images/user_location_icon_android.png');
+const satMarkerImage_android = require('../assets/images/equisat_logo_white_android.png');
+
 
 
 export default class TrackingScreen extends Component {
@@ -67,7 +69,10 @@ export default class TrackingScreen extends Component {
       
       TLE_Data: "",
       TLE_Ready: false,
+      satCoord: {lat: 0, lng: 0},
       satCoords: [],
+      satCoords2: [],
+      satCoords3: [],
     };
 
 
@@ -126,6 +131,18 @@ export default class TrackingScreen extends Component {
     this.setState({ mapMargin: 0 })
   }
 
+  snapToSat() {
+    this.setState({ lockedToSatLoc: true })
+    let region = {
+      latitude: this.state.satCoord.lat,
+      longitude: this.state.satCoord.lng,
+      latitudeDelta: 70,
+      longitudeDelta: 70,
+    }
+    this.map.animateToRegion(region);
+
+  }
+
 
 
   _getTLE(_this) {
@@ -160,7 +177,7 @@ export default class TrackingScreen extends Component {
 
   _getSatCoords = async () => {
 
-    const threeOrbitsArr = await getGroundTracks({
+    const orbitLines = await getGroundTracks({
       tle: this.state.TLE_Data,
     
       // Resolution of plotted points.  Defaults to 1000 (plotting a point once for every second).
@@ -170,7 +187,25 @@ export default class TrackingScreen extends Component {
       isLngLatFormat: false
     });
 
-    this.setState({ satCoords: threeOrbitsArr });
+    //this.setState({ satCoords: orbitLines });
+
+    const satCoord = getLatLngObj(this.state.TLE_Data);
+
+    var satCoords = [];
+    var satCoords2 = [];
+    for (var i = 0; i < orbitLines[1].length; i++) {
+      satCoords = [ ...satCoords, {latitude: orbitLines[1][i][0], longitude: orbitLines[1][i][1]}];
+    }
+    for (var i = 0; i < orbitLines[2].length; i++) {
+      satCoords2 = [ ...satCoords2, {latitude: orbitLines[2][i][0], longitude: orbitLines[2][i][1]}];
+    }
+
+    this.setState({ satCoord });
+    this.setState({ satCoords });
+    this.setState({ satCoords2 });
+
+
+
 
     
   };
@@ -213,6 +248,8 @@ export default class TrackingScreen extends Component {
 
   render() {
 
+    console.log(this.state.satCoord)
+
     return (
       <View style={styles.container}>
         <MapView
@@ -227,7 +264,7 @@ export default class TrackingScreen extends Component {
           showsCompass={true}
           showsMyLocationButton={false}
           style={[styles.mapStyle, { marginBottom: this.state.mapMargin }]}
-          //customMapStyle={MapStyling}
+          customMapStyle={MapStyling}
           initialRegion={this.state.region}
           onMapReady={this.setMargin}
         >
@@ -253,6 +290,39 @@ export default class TrackingScreen extends Component {
           >
           </Marker>
 
+          <MapView.Marker.Animated
+            ref={ref => { this.satMarker = ref; }}
+            coordinate={{
+              latitude: this.state.satCoord.lat,
+              longitude: this.state.satCoord.lng
+            }}
+            image={isAndroid ? satMarkerImage_android : null}
+            opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0)  ? 1.0 : 0}
+          >
+            {isAndroid ? null : <Image source={satMarkerImage} style={{width:40, height:40}} resizeMode="contain" />}
+          </MapView.Marker.Animated>
+
+          <MapView.Polyline
+            coordinates={this.state.satCoords}
+            strokeWidth={5}
+            strokeColor="#44669f"/>
+
+
+          <MapView.Polyline
+            coordinates={this.state.satCoords2}
+            strokeWidth={5}
+            strokeColor="#b09b4b"/>
+
+          <MapView.Circle
+            center={{
+              latitude: this.state.satCoord.lat,
+              longitude: this.state.satCoord.lng
+            }}
+            radius={this.state.TLEReady ? AUDIBLE_CIRCLE_RADIUS_M : 0}
+            strokeWidth={2}
+            zIndex={99}
+            strokeColor="#e5e5e5" />
+
         </MapView>
 
         <ActionButton
@@ -272,7 +342,7 @@ export default class TrackingScreen extends Component {
           offsetY={15}
           fixNativeFeedbackRadius={true}
           userNativeFeedback={true}
-          //onPress={() => { this.getTLE() }}
+          onPress={() => { this.snapToSat() }}
         />
       </View>
     );
