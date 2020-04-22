@@ -31,7 +31,9 @@ const tle_ISS = `ISS (ZARYA)
 
 const isAndroid = (Platform.OS === 'android');
 const userMarkerImage_android = require('../assets/images/user_location_icon_android.png');
-const satMarkerImage_android = require('../assets/images/Picture1.png');
+const satMarkerImage_android = require('../assets/images/birds3_gold.png');
+const satMarker2Image_android = require('../assets/images/birds3_white.png');
+const satMarker3Image_android = require('../assets/images/birds3_red.png');
 
 
 
@@ -68,11 +70,25 @@ export default class TrackingScreen extends Component {
       searchErrorSnackbarVisible: false,
       
       TLE_Data: "",
+      TLE_Data_Nep: "",
+      TLE_Data_Sri: "",
+
       TLE_Ready: false,
+
       satCoord: {lat: 0, lng: 0},
       satCoords: [],
       satCoords2: [],
       satCoords3: [],
+
+      satCoord_Nep: {lat: 0, lng: 0},
+      satCoords_Nep: [],
+      satCoords2_Nep: [],
+
+      satCoord_Sri: {lat: 0, lng: 0},
+      satCoords_Sri: [],
+      satCoords2_Sri: [],
+
+
     };
 
 
@@ -144,7 +160,6 @@ export default class TrackingScreen extends Component {
   }
 
 
-
   _getTLE(_this) {
 
     axios
@@ -170,6 +185,54 @@ export default class TrackingScreen extends Component {
         this._getSatCoords();
 
 
+      })
+
+
+      axios
+      .get('https://www.n2yo.com/rest/v1/satellite/tle/44329&apiKey=U726VS-YUR6BP-5CYTW9-4CT4')
+      .then(res => {
+        var data = res.data.tle;
+
+        // break the textblock into an array of lines
+        var lines1 = data.split('\n');
+        var lines2 = data.split('\n');
+        // remove one line, starting at the first position
+        lines1.splice(1, 2);
+        lines2.splice(0, 1);
+        // join the array back into a single string
+        const name = ["NEPALISAT-1"];
+        var temp = name.concat(lines1);
+        var newtext = temp.concat(lines2);
+
+        this.setState({ TLE_Data_Nep: newtext });
+
+        //this.setState({ TLEReady: true });
+
+        this._getSatCoords_Nep();
+
+
+      })
+
+      axios
+      .get('https://www.n2yo.com/rest/v1/satellite/tle/44330&apiKey=U726VS-YUR6BP-5CYTW9-4CT4')
+      .then(res => {
+        var data = res.data.tle;
+
+        // break the textblock into an array of lines
+        var lines1 = data.split('\n');
+        var lines2 = data.split('\n');
+        // remove one line, starting at the first position
+        lines1.splice(1, 2);
+        lines2.splice(0, 1);
+        // join the array back into a single string
+        const name = ["RAAVANA-1"];
+        var temp = name.concat(lines1);
+        var newtext = temp.concat(lines2);
+
+        this.setState({ TLE_Data_Sri: newtext });
+
+        this._getSatCoords_Sri();
+
 
       })
 
@@ -193,22 +256,87 @@ export default class TrackingScreen extends Component {
 
     var satCoords = [];
     var satCoords2 = [];
+    var satCoords3 = [];
+    for (var i = 0; i < orbitLines[0].length; i++) {
+      satCoords = [ ...satCoords, {latitude: orbitLines[0][i][0], longitude: orbitLines[0][i][1]}];
+    }
     for (var i = 0; i < orbitLines[1].length; i++) {
-      satCoords = [ ...satCoords, {latitude: orbitLines[1][i][0], longitude: orbitLines[1][i][1]}];
+      satCoords2 = [ ...satCoords2, {latitude: orbitLines[1][i][0], longitude: orbitLines[1][i][1]}];
     }
     for (var i = 0; i < orbitLines[2].length; i++) {
-      satCoords2 = [ ...satCoords2, {latitude: orbitLines[2][i][0], longitude: orbitLines[2][i][1]}];
+      satCoords3 = [ ...satCoords3, {latitude: orbitLines[2][i][0], longitude: orbitLines[2][i][1]}];
     }
 
     this.setState({ satCoord });
     this.setState({ satCoords });
     this.setState({ satCoords2 });
-
-
-
+    this.setState({ satCoords3 });
 
     
   };
+
+  _getSatCoords_Nep = async () => {
+
+    const orbitLines = await getGroundTracks({
+      tle: this.state.TLE_Data_Nep,
+    
+      // Resolution of plotted points.  Defaults to 1000 (plotting a point once for every second).
+      stepMS: 1000,
+    
+      // Returns points in [lng, lat] order when true, and [lng, lat] order when false.
+      isLngLatFormat: false
+    });
+
+    //this.setState({ satCoords: orbitLines });
+
+    const satCoord_Nep = getLatLngObj(this.state.TLE_Data_Nep);
+
+    var satCoords_Nep = [];
+    var satCoords2_Nep = [];
+    for (var i = 0; i < orbitLines[1].length; i++) {
+      satCoords_Nep = [ ...satCoords_Nep, {latitude: orbitLines[1][i][0], longitude: orbitLines[1][i][1]}];
+    }
+    for (var i = 0; i < orbitLines[2].length; i++) {
+      satCoords2_Nep = [ ...satCoords2_Nep, {latitude: orbitLines[2][i][0], longitude: orbitLines[2][i][1]}];
+    }
+
+    this.setState({ satCoord_Nep });
+    this.setState({ satCoords_Nep });
+    this.setState({ satCoords2_Nep });
+
+    
+  };
+
+  _getSatCoords_Sri = async () => {
+
+    const orbitLines = await getGroundTracks({
+      tle: this.state.TLE_Data_Sri,
+    
+      // Resolution of plotted points.  Defaults to 1000 (plotting a point once for every second).
+      stepMS: 1000,
+    
+      // Returns points in [lng, lat] order when true, and [lng, lat] order when false.
+      isLngLatFormat: false
+    });
+
+    const satCoord_Sri = getLatLngObj(this.state.TLE_Data_Sri);
+
+    var satCoords_Sri = [];
+    var satCoords2_Sri = [];
+    for (var i = 0; i < orbitLines[1].length; i++) {
+      satCoords_Sri = [ ...satCoords_Sri, {latitude: orbitLines[1][i][0], longitude: orbitLines[1][i][1]}];
+    }
+    for (var i = 0; i < orbitLines[2].length; i++) {
+      satCoords2_Sri = [ ...satCoords2_Sri, {latitude: orbitLines[2][i][0], longitude: orbitLines[2][i][1]}];
+    }
+
+    this.setState({ satCoord_Sri });
+    this.setState({ satCoords_Sri });
+    this.setState({ satCoords2_Sri });
+
+    
+  };
+
 
 
 
@@ -247,8 +375,6 @@ export default class TrackingScreen extends Component {
 
 
   render() {
-
-    console.log(this.state.satCoord)
 
     return (
       <View style={styles.container}>
@@ -296,32 +422,61 @@ export default class TrackingScreen extends Component {
               latitude: this.state.satCoord.lat,
               longitude: this.state.satCoord.lng
             }}
+            title="UGUISU"
             image={isAndroid ? satMarkerImage_android : null}
             opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0)  ? 1.0 : 0}
           >
             {isAndroid ? null : <Image source={satMarkerImage} style={{width:40, height:40}} resizeMode="contain" />}
           </MapView.Marker.Animated>
 
-          <MapView.Polyline
-            coordinates={this.state.satCoords}
-            strokeWidth={5}
-            strokeColor="#44669f"/>
+          <MapView.Marker.Animated
+            ref={ref => { this.satMarker = ref; }}
+            coordinate={{
+              latitude: this.state.satCoord_Nep.lat,
+              longitude: this.state.satCoord_Nep.lng
+            }}
+            title="NEPALISAT-1"
+            image={isAndroid ? satMarker2Image_android : null}
+            opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0)  ? 1.0 : 0}
+          >
+            {isAndroid ? null : <Image source={satMarkerImage} style={{width:40, height:40}} resizeMode="contain" />}
+          </MapView.Marker.Animated>
 
+          <MapView.Marker.Animated
+            ref={ref => { this.satMarker = ref; }}
+            coordinate={{
+              latitude: this.state.satCoord_Sri.lat,
+              longitude: this.state.satCoord_Sri.lng
+            }}
+            title="RAAVANA-1"
+            image={isAndroid ? satMarker3Image_android : null}
+            opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0)  ? 1.0 : 0}
+          >
+            {isAndroid ? null : <Image source={satMarkerImage} style={{width:40, height:40}} resizeMode="contain" />}
+          </MapView.Marker.Animated>
+
+          {/* <MapView.Polyline
+            coordinates={this.state.satCoords}
+            strokeWidth={3}
+            strokeColor="#f0d797"
+            lineJoin="round"/> */}
 
           <MapView.Polyline
             coordinates={this.state.satCoords2}
-            strokeWidth={5}
-            strokeColor="#b09b4b"/>
+            strokeWidth={3}
+            strokeColor="#daa520"
+            lineJoin="round"
+            tappable={true} />
 
-          <MapView.Circle
-            center={{
-              latitude: this.state.satCoord.lat,
-              longitude: this.state.satCoord.lng
-            }}
-            radius={this.state.TLEReady ? AUDIBLE_CIRCLE_RADIUS_M : 0}
-            strokeWidth={2}
-            zIndex={99}
-            strokeColor="#e5e5e5" />
+          {/* <MapView.Polyline
+            coordinates={this.state.satCoords3}
+            strokeWidth={3}
+            strokeColor="#8b6a15"
+            lineJoin="round" /> */}
+
+
+
+
 
         </MapView>
 
@@ -615,3 +770,5 @@ const MapStyling = [
     ]
   }
 ]
+
+
