@@ -35,6 +35,8 @@ const satMarkerImage_android = require('../assets/images/birds3_gold.png');
 const satMarker2Image_android = require('../assets/images/birds3_white.png');
 const satMarker3Image_android = require('../assets/images/birds3_red.png');
 
+var counter = 0;
+
 
 
 export default class TrackingScreen extends Component {
@@ -135,13 +137,31 @@ export default class TrackingScreen extends Component {
     this.setState({ showUserLocMarker: true });
   };
 
+  updateSatLocation(_this) {
+
+    const satCoord = getLatLngObj(this.state.TLE_Data);
+    const satCoord_Nep = getLatLngObj(this.state.TLE_Data_Nep);
+    const satCoord_Sri = getLatLngObj(this.state.TLE_Data_Sri);
+
+    this.setState({ satCoord });
+    this.setState({ satCoord_Nep });
+    this.setState({ satCoord_Sri });
+
+  }
 
   componentDidMount() {
     this._getLocationAsync(); //get user location
     this._getTLE(); //get sat location
-    
-
+    var _this = this;
+    //get sat location every second
+    this.satUpdateAsyncID = setInterval(function () {_this.updateSatLocation(_this); }, 2000);
   }
+
+  componentWillUnmount() {
+    clearInterval(this.satUpdateAsyncID);
+  }
+
+
 
   setMargin = () => {
     this.setState({ mapMargin: 0 })
@@ -152,8 +172,8 @@ export default class TrackingScreen extends Component {
     let region = {
       latitude: this.state.satCoord.lat,
       longitude: this.state.satCoord.lng,
-      latitudeDelta: 70,
-      longitudeDelta: 70,
+      latitudeDelta: 50,
+      longitudeDelta: 50,
     }
     this.map.animateToRegion(region);
 
@@ -455,24 +475,24 @@ export default class TrackingScreen extends Component {
             {isAndroid ? null : <Image source={satMarkerImage} style={{width:40, height:40}} resizeMode="contain" />}
           </MapView.Marker.Animated>
 
-          {/* <MapView.Polyline
+           <MapView.Polyline
             coordinates={this.state.satCoords}
-            strokeWidth={3}
-            strokeColor="#f0d797"
-            lineJoin="round"/> */}
+            strokeWidth={2}
+            strokeColor="#bedfff"
+            lineJoin="round"/>
 
           <MapView.Polyline
             coordinates={this.state.satCoords2}
-            strokeWidth={3}
-            strokeColor="#daa520"
+            strokeWidth={2}
+            strokeColor="#1e90ff"
             lineJoin="round"
             tappable={true} />
 
-          {/* <MapView.Polyline
+           <MapView.Polyline
             coordinates={this.state.satCoords3}
-            strokeWidth={3}
-            strokeColor="#8b6a15"
-            lineJoin="round" /> */}
+            strokeWidth={2}
+            strokeColor="#004a92"
+            lineJoin="round" /> 
 
 
 
@@ -507,7 +527,7 @@ export default class TrackingScreen extends Component {
 
 
 TrackingScreen.navigationOptions = {
-  title: 'BIRDS-5: Tracking',
+  title: 'BIRDS-NEST: Tracking',
   headerStyle: {
     backgroundColor: '#131a20',
   },

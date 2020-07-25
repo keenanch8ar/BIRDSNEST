@@ -22,6 +22,8 @@ if (!firebase.apps.length) {
 	});
 }
 
+
+
 var db = firebase.firestore();
 
 import { YellowBox } from 'react-native';
@@ -95,7 +97,15 @@ export default class DataScreen extends Component {
 								</View>
 								<View style={styles.rowContainerLeft} >
 									<Icon name="radio-tower" size={20} style={styles.icon} />
-									<Text style={styles.cardText}>{data[0].Recorded_observatory}</Text>
+									<Text style={styles.cardText}>BIRDS-3 (UGUISU)</Text>
+								</View>
+								<View style={styles.rowContainerLeft} >
+									<Text style={styles.cardText}>Callsign: </Text>
+									<Text style={styles.cardText}>{data[0].Callsign}</Text>
+								</View>
+								<View style={styles.rowContainerLeft} >
+									<Text style={styles.cardText}>Nation: </Text>
+									<Text style={styles.cardText}>{data[0].Nation}</Text>
 								</View>
 								<View style={styles.rowContainerLeft} >
 									<Text style={styles.cardText}>Operation Mode: </Text>
@@ -106,8 +116,12 @@ export default class DataScreen extends Component {
 									<Text style={styles.cardText}>{data[0].Uplink_success.toString()}</Text>
 								</View>
 								<View style={styles.rowContainerLeft} >
+									<Text style={styles.cardText}>Daytime/Shadow:  </Text>
+									<Text style={styles.cardText}>{data[0].Day_or_Shadow}</Text>
+								</View>
+								<View style={styles.rowContainerLeft} >
 									<Text style={styles.cardText}>Last Reset:  </Text>
-									<Text style={styles.cardText}>{data[0].From_last_reset}</Text>
+									<Text style={styles.cardText}>{data[0].time_after_reset}</Text>
 								</View>
 							</ElevatedView>
 						</View>
@@ -119,6 +133,10 @@ export default class DataScreen extends Component {
 								<View style={styles.rowContainerLeft} >
 									<Icon name="battery" size={20} style={styles.icon} />
 									<Text style={styles.cardText}>LiPo Battery</Text>
+								</View>
+								<View style={styles.rowContainerLeft} >
+									<Text style={styles.cardText}>Battery Voltage:  </Text>
+									<Text style={styles.cardText}>{data[0].Battery_voltage}V</Text>
 								</View>
 								<View style={styles.rowContainerLeft} >
 									<Text style={styles.cardText}>Battery Current:  </Text>
@@ -139,26 +157,32 @@ export default class DataScreen extends Component {
 	
 						<View style={styles.rowContainer} >
 							<ElevatedView elevation={5} style={[styles.card, { marginTop: 10 }]} >
-								<Text style={styles.cardTitle}>Ambient Temperatures</Text>
-								<Text style={styles.cardSubtitle}> </Text>
+								<Text style={styles.cardTitle}>General Information</Text>
+								<Text style={styles.cardText}> </Text>
+
 								<View style={styles.rowContainerCenter} >
-									<Text style={styles.cardSubtitle}>LiPo Battery </Text>
+									<Text style={styles.cardSubtitle}>Status </Text>
 								</View>
 								<Text style={styles.cardText}> </Text>
-								<View style={styles.rowContainerLeft} >
-									<Text style={styles.cardText}>Current State:  </Text>
-									<Text style={styles.cardText}>Normal Range</Text>
+
+								<View style={styles.rowContainer} >
+									<View style={{ flex: 0.5, alignItems: 'center' }}>
+										<Text style={styles.cardText}>Kill Main: {data[0].Kill_MAIN.toString()} </Text>
+										<Text style={styles.cardText}>Kill FAB: {data[0].Kill_FAB.toString()}</Text>
+										<Text style={styles.cardText}>RSV Check Flag: {data[0].RSV_check_flag.toString()}</Text>
+										<Text style={styles.cardText}>MBP: {data[0].MBP.toString()}</Text>
+									</View>
+	
+									<View style={{ flex: 0.5, alignItems: 'center' }}>
+										<Text style={styles.cardText}>Auto_HSSC: {data[0].Auto_HSSC.toString()}</Text>
+										<Text style={styles.cardText}>Auto_CAM: {data[0].Auto_CAM.toString()}</Text>
+										<Text style={styles.cardText}>Auto_LDM: {data[0].Auto_LDM.toString()}</Text>
+										<Text style={styles.cardText}>Auto_ADCS: {data[0].Auto_ADCS.toString()}</Text>
+									</View>
+	
 								</View>
-								<View style={styles.rowContainerLeft} >
-									<Text style={styles.cardText}>Temperature:  </Text>
-									<Text style={styles.cardText}>{data[0].Battery_temp}</Text>
-									<Icon name="temperature-celsius" size={20} style={styles.icon} />
-								</View>
-								<View style={styles.rowContainerLeft} >
-									<Text style={styles.cardText}>Peak Temperature:  </Text>
-									<Text style={styles.cardText}>85</Text>
-									<Icon name="temperature-celsius" size={20} style={styles.icon} />
-								</View>
+
+
 								<Text style={styles.cardText}> </Text>
 								<View style={styles.rowContainerCenter} >
 									<Text style={styles.cardSubtitle}>Solar Panel </Text>
@@ -169,8 +193,8 @@ export default class DataScreen extends Component {
 									<Text style={styles.cardText}>Normal Range</Text>
 								</View>
 								<View style={styles.rowContainerLeft} >
-									<Text style={styles.cardText}>Temperature:  </Text>
-									<Text style={styles.cardText}>-18.07</Text>
+									<Text style={styles.cardText}>Backplane Temperature:  </Text>
+									<Text style={styles.cardText}>{data[0].Backplane_temp}</Text>
 									<Icon name="temperature-celsius" size={20} style={styles.icon} />
 								</View>
 								<View style={styles.rowContainerLeft} >
@@ -220,7 +244,7 @@ export default class DataScreen extends Component {
 	}
 }
 DataScreen.navigationOptions = {
-	title: 'BIRDS-5: Data',
+	title: 'BIRDS-NEST: Data',
 	headerStyle: {
 		backgroundColor: '#131a20',
 	  },

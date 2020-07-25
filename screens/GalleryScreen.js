@@ -115,7 +115,7 @@ export default class GalleryScreen extends React.Component {
 }
 
 GalleryScreen.navigationOptions = {
-  title: 'BIRDS-5: Gallery',
+  title: 'BIRDS-NEST: Gallery',
   headerStyle: {
     backgroundColor: '#131a20',
   },

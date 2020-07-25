@@ -54,7 +54,7 @@ export default class CADScreen extends React.Component {
 }
 
 CADScreen.navigationOptions = {
-  title: 'BIRDS-5: CAD Model',
+  title: 'BIRDS-NEST: CAD Model',
   headerStyle: {
     backgroundColor: '#131a20',
   },
