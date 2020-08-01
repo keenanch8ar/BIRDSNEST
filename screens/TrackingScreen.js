@@ -11,8 +11,8 @@ import { getGroundTracks, getLatLngObj } from "tle.js";
 const defaultRegion = {
   latitude: 33.892668,
   longitude: 130.840288,
-  latitudeDelta: 5,
-  longitudeDelta: 5,
+  latitudeDelta: 50,
+  longitudeDelta: 50,
 }
 
 const AUDIBLE_CIRCLE_RADIUS_M = 1000 * 2000;
@@ -409,10 +409,9 @@ export default class TrackingScreen extends Component {
           showsUserLocation={true}
           showsCompass={true}
           showsMyLocationButton={false}
-          style={[styles.mapStyle, { marginBottom: this.state.mapMargin }]}
+          style={styles.map}
           customMapStyle={MapStyling}
           initialRegion={this.state.region}
-          onMapReady={this.setMargin}
         >
           <Marker
             ref={ref => { this.userLocMarker = ref; }}
@@ -544,11 +543,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  mapStyle: {
-    flex: 1,
-    backgroundColor: '#fff',
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+  map: {
+    ...StyleSheet.absoluteFillObject,
   },
   actionButtonIcon: {
     fontSize: 23,
