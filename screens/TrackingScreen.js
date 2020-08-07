@@ -7,6 +7,7 @@ import axios from 'axios';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import { getGroundTracks, getLatLngObj } from "tle.js";
+import { AppLoading } from 'expo';
 
 const defaultRegion = {
   latitude: 33.892668,
@@ -34,9 +35,6 @@ const userMarkerImage_android = require('../assets/images/user_location_icon_and
 const satMarkerImage_android = require('../assets/images/birds3_gold.png');
 const satMarker2Image_android = require('../assets/images/birds3_white.png');
 const satMarker3Image_android = require('../assets/images/birds3_red.png');
-
-var counter = 0;
-
 
 
 export default class TrackingScreen extends Component {
@@ -139,6 +137,8 @@ export default class TrackingScreen extends Component {
 
   updateSatLocation(_this) {
 
+    if (_this.state.TLEReady) {
+
     const satCoord = getLatLngObj(this.state.TLE_Data);
     const satCoord_Nep = getLatLngObj(this.state.TLE_Data_Nep);
     const satCoord_Sri = getLatLngObj(this.state.TLE_Data_Sri);
@@ -146,6 +146,8 @@ export default class TrackingScreen extends Component {
     this.setState({ satCoord });
     this.setState({ satCoord_Nep });
     this.setState({ satCoord_Sri });
+
+    }
 
   }
 
@@ -160,7 +162,6 @@ export default class TrackingScreen extends Component {
   componentWillUnmount() {
     clearInterval(this.satUpdateAsyncID);
   }
-
 
 
   setMargin = () => {
@@ -199,8 +200,6 @@ export default class TrackingScreen extends Component {
         var newtext = temp.concat(lines2);
 
         this.setState({ TLE_Data: newtext });
-
-        this.setState({ TLEReady: true });
 
         this._getSatCoords();
 
@@ -252,6 +251,8 @@ export default class TrackingScreen extends Component {
         this.setState({ TLE_Data_Sri: newtext });
 
         this._getSatCoords_Sri();
+
+        this.setState({ TLEReady: true });
 
 
       })
@@ -358,9 +359,6 @@ export default class TrackingScreen extends Component {
   };
 
 
-
-
-
   showUserLoc() {
     this.setState({ lockedToSatLoc: false });
     this.setState({ showUserLoc: true });
@@ -396,6 +394,7 @@ export default class TrackingScreen extends Component {
 
   render() {
 
+
     return (
       <View style={styles.container}>
         <MapView
@@ -409,9 +408,10 @@ export default class TrackingScreen extends Component {
           showsUserLocation={true}
           showsCompass={true}
           showsMyLocationButton={false}
-          style={styles.map}
+          style={[styles.mapStyle, { marginBottom: this.state.mapMargin }]}
           customMapStyle={MapStyling}
           initialRegion={this.state.region}
+          onMapReady={this.setMargin}
         >
           <Marker
             ref={ref => { this.userLocMarker = ref; }}
@@ -443,9 +443,9 @@ export default class TrackingScreen extends Component {
             }}
             title="UGUISU"
             image={isAndroid ? satMarkerImage_android : null}
-            opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0)  ? 1.0 : 0}
+            opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0) ? 1.0 : 0}
           >
-            {isAndroid ? null : <Image source={satMarkerImage} style={{width:40, height:40}} resizeMode="contain" />}
+            {isAndroid ? null : <Image source={satMarkerImage} style={{ width: 40, height: 40 }} resizeMode="contain" />}
           </MapView.Marker.Animated>
 
           <MapView.Marker.Animated
@@ -456,9 +456,9 @@ export default class TrackingScreen extends Component {
             }}
             title="NEPALISAT-1"
             image={isAndroid ? satMarker2Image_android : null}
-            opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0)  ? 1.0 : 0}
+            opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0) ? 1.0 : 0}
           >
-            {isAndroid ? null : <Image source={satMarkerImage} style={{width:40, height:40}} resizeMode="contain" />}
+            {isAndroid ? null : <Image source={satMarkerImage} style={{ width: 40, height: 40 }} resizeMode="contain" />}
           </MapView.Marker.Animated>
 
           <MapView.Marker.Animated
@@ -469,16 +469,16 @@ export default class TrackingScreen extends Component {
             }}
             title="RAAVANA-1"
             image={isAndroid ? satMarker3Image_android : null}
-            opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0)  ? 1.0 : 0}
+            opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0) ? 1.0 : 0}
           >
-            {isAndroid ? null : <Image source={satMarkerImage} style={{width:40, height:40}} resizeMode="contain" />}
+            {isAndroid ? null : <Image source={satMarkerImage} style={{ width: 40, height: 40 }} resizeMode="contain" />}
           </MapView.Marker.Animated>
 
-           <MapView.Polyline
+          <MapView.Polyline
             coordinates={this.state.satCoords}
             strokeWidth={2}
-            strokeColor="#bedfff"
-            lineJoin="round"/>
+            strokeColor="#65b3ff"
+            lineJoin="round" />
 
           <MapView.Polyline
             coordinates={this.state.satCoords2}
@@ -487,21 +487,18 @@ export default class TrackingScreen extends Component {
             lineJoin="round"
             tappable={true} />
 
-           <MapView.Polyline
+          <MapView.Polyline
             coordinates={this.state.satCoords3}
             strokeWidth={2}
             strokeColor="#004a92"
-            lineJoin="round" /> 
-
-
-
+            lineJoin="round" />
 
 
         </MapView>
 
         <ActionButton
           buttonColor='#3498db'
-          renderIcon={active => active ? (<Icon name="md-locate" style={styles.actionButtonIcon} /> ) : (<Icon name="md-locate" style={styles.actionButtonIcon} />)}
+          renderIcon={active => active ? (<Icon name="md-locate" style={styles.actionButtonIcon} />) : (<Icon name="md-locate" style={styles.actionButtonIcon} />)}
           offsetX={15}
           offsetY={90}
           fixNativeFeedbackRadius={true}
@@ -538,13 +535,20 @@ TrackingScreen.navigationOptions = {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  map: {
-    ...StyleSheet.absoluteFillObject,
+  mapStyle: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   actionButtonIcon: {
     fontSize: 23,

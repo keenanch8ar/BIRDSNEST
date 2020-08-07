@@ -1,21 +1,20 @@
 {
   "expo": {
-    "name": "BIRDSTest1",
-    "slug": "test-project-1",
+    "name": "BIRDSNEST",
+    "slug": "birdsnest-project",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
       "ios",
-      "android",
-      "web"
+      "android"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/birdsnest.png",
+    "icon": "./assets/images/birdsnest_logo.png",
     "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/images/birdsnest_splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#000000"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -24,20 +23,36 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.kyutech.birdsnestproject.ios",
+      "icon": "./assets/images/appstore.png",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We need to know your current location to determine the satellite's relative position to you. Do you allow us to use location service on this device?"
+      },
+      "supportsTablet": false
+    },
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "kyutech",
+            "project": "birdsnest",
+            "authToken": "559ebef25f8c4db2bce6a392c7c6b006c25aa964584b4c0391d5317d54894c5c"
+          }
+        }
+      ]
     },
     "android": {
-      "package": "com.kyutech.birdsnest",
+      "package": "com.kyutech.birdsnestproject",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyB9pojqHjzHE6ZA4kAtiD3Engj5YFnTtHw"
+          "apiKey": "AIzaSyCyIS4_ypDKZGBBpITlrsh1QeIVp_vRA5A"
         }
       },
       "versionCode": 1,
       "permissions": [
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION",
-        "CAMERA"
+        "ACCESS_FINE_LOCATION"
       ]
     },
     "androidNavigationBar": {

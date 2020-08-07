@@ -4,6 +4,7 @@ import * as Font from 'expo-font';
 import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as Sentry from 'sentry-expo';
 
 import AppNavigator from './navigation/AppNavigator';
 
@@ -11,6 +12,13 @@ import AppNavigator from './navigation/AppNavigator';
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
+
+  Sentry.init({
+    dsn: 'https://441bafefbf464c6788427a49dec5cfda@o430619.ingest.sentry.io/5379464',
+    enableInExpoDevelopment: true,
+    debug :  __DEV__
+  });
+
 
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return (
@@ -55,6 +63,7 @@ function handleLoadingError(error) {
 function handleFinishLoading(setLoadingComplete) {
   setLoadingComplete(true);
 }
+
 
 const styles = StyleSheet.create({
   container: {

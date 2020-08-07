@@ -82,10 +82,11 @@ GalleryStack.path = '';
 
 
 const tabNavigator = createBottomTabNavigator({
+  
+  GalleryStack,
   TrackingStack,
   CADStack,
   DataStack,
-  GalleryStack,
 });
 
 tabNavigator.path = '';
