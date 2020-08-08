@@ -3,7 +3,7 @@
     "name": "BIRDSNEST",
     "slug": "birdsnest-project",
     "privacy": "public",
-    "sdkVersion": "36.0.0",
+    "sdkVersion": "38.0.0",
     "platforms": [
       "ios",
       "android"
@@ -24,6 +24,9 @@
     ],
     "ios": {
       "bundleIdentifier": "com.kyutech.birdsnestproject.ios",
+      "config": {
+        "googleMapsApiKey": "AIzaSyBlTs37IBfLm2i3-GcGeXolM0vhKJNi5mo"
+      },
       "icon": "./assets/images/appstore.png",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "We need to know your current location to determine the satellite's relative position to you. Do you allow us to use location service on this device?"
@@ -54,14 +57,6 @@
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION"
       ]
-    },
-    "androidNavigationBar": {
-      "visible": true,
-      "barStyle": "dark-content",
-      "backgroundColor": "#000000"
-    },
-    "androidStatusBarColor": "#1b1b1b", 
-    "androidStatusBar": { "barStyle": "light-content", "backgroundColor": "#1b1b1b" }
-
+    }
   }
 }

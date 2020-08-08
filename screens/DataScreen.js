@@ -132,7 +132,7 @@ export default class DataScreen extends Component {
 								<Text style={styles.cardText}> </Text>
 								<View style={styles.rowContainerLeft} >
 									<Icon name="battery" size={20} style={styles.icon} />
-									<Text style={styles.cardText}>LiPo Battery</Text>
+									<Text style={styles.cardText}>NiMH Battery</Text>
 								</View>
 								<View style={styles.rowContainerLeft} >
 									<Text style={styles.cardText}>Battery Voltage:  </Text>
