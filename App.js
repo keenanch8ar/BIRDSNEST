@@ -15,8 +15,8 @@ export default function App(props) {
 
   Sentry.init({
     dsn: 'https://441bafefbf464c6788427a49dec5cfda@o430619.ingest.sentry.io/5379464',
-    enableInExpoDevelopment: true,
-    debug :  __DEV__
+    //enableInExpoDevelopment: true,
+    //debug :  __DEV__
   });
 
 

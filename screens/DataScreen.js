@@ -46,7 +46,9 @@ export default class DataScreen extends Component {
 
 		this.state = {
 			dataFromDatabase: [],
-			isLoading: false
+			isLoading: false,
+			notifyStatusSnackbarVisible: false,
+			notifyStatusSnackbarText: "",
 		};
 
 
@@ -72,7 +74,13 @@ export default class DataScreen extends Component {
 					 items.push(doc.data());
 				 });
 				 this.setState({ dataFromDatabase: items, isLoading: false }); //set data in state here
-			 });
+			 })
+			 .catch(function (error) {
+				this.setState({ notifyStatusSnackbarText: "Error connecting to Database. Please Turn on Wifi/Data"});
+				this.setState({ notifyStatusSnackbarVisible: true });
+				setTimeout(function(){this.setState({ notifyStatusSnackbarVisible: false })}, 5000);
+				console.log("ERR3: " + error);
+			  });
 	 }
 
 	render() {

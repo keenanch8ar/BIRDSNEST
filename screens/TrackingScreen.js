@@ -8,6 +8,8 @@ import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import { getGroundTracks, getLatLngObj } from "tle.js";
 import { AppLoading } from 'expo';
+import { color } from 'react-native-reanimated';
+import * as Sentry from "@sentry/react-native";
 
 const defaultRegion = {
   latitude: 33.892668,
@@ -19,7 +21,7 @@ const defaultRegion = {
 const AUDIBLE_CIRCLE_RADIUS_M = 1000 * 2000;
 
 const TLEStr = '1998-067PA\n1 43552U 98067PA  18203.24282627  .00006515  00000-0  10313-3 0  9994\n2 43552  51.6412 203.9371 0005837 350.6408   9.4476 15.54781596  1354'
-
+const testingaxious = ["UGUISU","",""]
 const tleArr = [
   'ISS (ZARYA)',
   '1 25544U 98067A   17206.18396726  .00001961  00000-0  36771-4 0  9993',
@@ -69,9 +71,9 @@ export default class TrackingScreen extends Component {
       showSearchLocMarker: false,
       searchErrorSnackbarVisible: false,
       
-      TLE_Data: "",
-      TLE_Data_Nep: "",
-      TLE_Data_Sri: "",
+      TLE_Data: [],
+      TLE_Data_Nep: [],
+      TLE_Data_Sri: [],
 
       TLE_Ready: false,
 
@@ -93,27 +95,6 @@ export default class TrackingScreen extends Component {
 
 
   }
-
-  printDate(date) {
-    // Create an array with the current month, day and time
-      var dateArr = [ date.getMonth() + 1, date.getDate(), date.getFullYear() ];
-    // Create an array with the current hour, minute and second
-      var timeArr = [ date.getHours(), date.getMinutes() ];
-    // Determine AM or PM suffix based on the hour
-      var suffix = ( timeArr[0] < 12 ) ? "AM" : "PM";
-    // Convert hour from military time
-      timeArr[0] = ( timeArr[0] < 12 ) ? timeArr[0] : timeArr[0] - 12;
-    // If hour is 0, set it to 12
-      timeArr[0] = timeArr[0] || 12;
-    // If seconds and minutes are less than 10, add a zero
-      for ( var i = 1; i < 3; i++ ) {
-        if ( timeArr[i] < 10 ) {
-          timeArr[i] = "0" + timeArr[i];
-        }
-      }
-    // Return the formatted string
-      return dateArr.join("/") + " at " + timeArr.join(":") + " " + suffix;
-}
 
 
   _getLocationAsync = async () => {
@@ -137,16 +118,39 @@ export default class TrackingScreen extends Component {
 
   updateSatLocation(_this) {
 
-    if (this.state.TLE_Data !== null && this.state.TLE_Data_Nep !== null && this.state.TLE_Data_Sri !== null ) {
+    //checks if any of the TLE data is empty, if it has no data the sat will not update
 
-    const satCoord = getLatLngObj(this.state.TLE_Data);
-    const satCoord_Nep = getLatLngObj(this.state.TLE_Data_Nep);
-    const satCoord_Sri = getLatLngObj(this.state.TLE_Data_Sri);
+    if (this.state.TLE_Data === undefined || this.state.TLE_Data.length == 0 || this.state.TLE_Data.length == 1 || this.state.TLE_Data.includes("")) {
+      // array empty or does not exist
+      console.log('The data is empty');
+      //Sentry.captureMessage("Nepali-SAT TLE Data missing");
+    }
+    else {
+      const satCoord = getLatLngObj(this.state.TLE_Data);
+      this.setState({ satCoord });
+    }
 
-    this.setState({ satCoord });
-    this.setState({ satCoord_Nep });
-    this.setState({ satCoord_Sri });
 
+    if (this.state.TLE_Data_Nep === undefined || this.state.TLE_Data_Nep.length == 0 || this.state.TLE_Data_Nep.length == 1 || this.state.TLE_Data_Nep.includes("")) {
+      // array empty or does not exist
+      console.log('The data is empty');
+      //Sentry.captureMessage("Nepali-SAT TLE Data missing");
+    }
+    else {
+      const satCoord_Nep = getLatLngObj(this.state.TLE_Data_Nep);
+      this.setState({ satCoord_Nep });
+    }
+
+
+
+    if (this.state.TLE_Data_Sri === undefined || this.state.TLE_Data_Sri.length == 0 || this.state.TLE_Data_Sri.length == 1 || this.state.TLE_Data_Sri.includes("")) {
+      // array empty or does not exist
+      console.log('The data is empty');
+      //Sentry.captureMessage("RAAVANA-1 TLE Data missing");
+    }
+    else {
+      const satCoord_Sri = getLatLngObj(this.state.TLE_Data_Sri);
+      this.setState({ satCoord_Sri });
     }
 
   }
@@ -207,7 +211,7 @@ export default class TrackingScreen extends Component {
       })
 
 
-      axios
+    axios
       .get('https://www.n2yo.com/rest/v1/satellite/tle/44329&apiKey=U726VS-YUR6BP-5CYTW9-4CT4')
       .then(res => {
         var data = res.data.tle;
@@ -225,14 +229,10 @@ export default class TrackingScreen extends Component {
 
         this.setState({ TLE_Data_Nep: newtext });
 
-        //this.setState({ TLEReady: true });
-
-        this._getSatCoords_Nep();
-
 
       })
 
-      axios
+    axios
       .get('https://www.n2yo.com/rest/v1/satellite/tle/44330&apiKey=U726VS-YUR6BP-5CYTW9-4CT4')
       .then(res => {
         var data = res.data.tle;
@@ -250,11 +250,9 @@ export default class TrackingScreen extends Component {
 
         this.setState({ TLE_Data_Sri: newtext });
 
-        this._getSatCoords_Sri();
-
       })
 
-      this.setState({ TLEReady: true });
+    this.setState({ TLEReady: true });
 
 
   };
@@ -271,10 +269,6 @@ export default class TrackingScreen extends Component {
       isLngLatFormat: false
     });
 
-    //this.setState({ satCoords: orbitLines });
-
-    const satCoord = getLatLngObj(this.state.TLE_Data);
-
     var satCoords = [];
     var satCoords2 = [];
     var satCoords3 = [];
@@ -288,72 +282,9 @@ export default class TrackingScreen extends Component {
       satCoords3 = [ ...satCoords3, {latitude: orbitLines[2][i][0], longitude: orbitLines[2][i][1]}];
     }
 
-    this.setState({ satCoord });
     this.setState({ satCoords });
     this.setState({ satCoords2 });
     this.setState({ satCoords3 });
-
-    
-  };
-
-  _getSatCoords_Nep = async () => {
-
-    const orbitLines = await getGroundTracks({
-      tle: this.state.TLE_Data_Nep,
-    
-      // Resolution of plotted points.  Defaults to 1000 (plotting a point once for every second).
-      stepMS: 1000,
-    
-      // Returns points in [lng, lat] order when true, and [lng, lat] order when false.
-      isLngLatFormat: false
-    });
-
-    //this.setState({ satCoords: orbitLines });
-
-    const satCoord_Nep = getLatLngObj(this.state.TLE_Data_Nep);
-
-    var satCoords_Nep = [];
-    var satCoords2_Nep = [];
-    for (var i = 0; i < orbitLines[1].length; i++) {
-      satCoords_Nep = [ ...satCoords_Nep, {latitude: orbitLines[1][i][0], longitude: orbitLines[1][i][1]}];
-    }
-    for (var i = 0; i < orbitLines[2].length; i++) {
-      satCoords2_Nep = [ ...satCoords2_Nep, {latitude: orbitLines[2][i][0], longitude: orbitLines[2][i][1]}];
-    }
-
-    this.setState({ satCoord_Nep });
-    this.setState({ satCoords_Nep });
-    this.setState({ satCoords2_Nep });
-
-    
-  };
-
-  _getSatCoords_Sri = async () => {
-
-    const orbitLines = await getGroundTracks({
-      tle: this.state.TLE_Data_Sri,
-    
-      // Resolution of plotted points.  Defaults to 1000 (plotting a point once for every second).
-      stepMS: 1000,
-    
-      // Returns points in [lng, lat] order when true, and [lng, lat] order when false.
-      isLngLatFormat: false
-    });
-
-    const satCoord_Sri = getLatLngObj(this.state.TLE_Data_Sri);
-
-    var satCoords_Sri = [];
-    var satCoords2_Sri = [];
-    for (var i = 0; i < orbitLines[1].length; i++) {
-      satCoords_Sri = [ ...satCoords_Sri, {latitude: orbitLines[1][i][0], longitude: orbitLines[1][i][1]}];
-    }
-    for (var i = 0; i < orbitLines[2].length; i++) {
-      satCoords2_Sri = [ ...satCoords2_Sri, {latitude: orbitLines[2][i][0], longitude: orbitLines[2][i][1]}];
-    }
-
-    this.setState({ satCoord_Sri });
-    this.setState({ satCoords_Sri });
-    this.setState({ satCoords2_Sri });
 
     
   };
