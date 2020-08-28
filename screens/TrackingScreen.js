@@ -137,7 +137,7 @@ export default class TrackingScreen extends Component {
 
   updateSatLocation(_this) {
 
-    if (_this.state.TLEReady) {
+    if (this.state.TLE_Data !== null && this.state.TLE_Data_Nep !== null && this.state.TLE_Data_Sri !== null ) {
 
     const satCoord = getLatLngObj(this.state.TLE_Data);
     const satCoord_Nep = getLatLngObj(this.state.TLE_Data_Nep);
@@ -252,10 +252,10 @@ export default class TrackingScreen extends Component {
 
         this._getSatCoords_Sri();
 
-        this.setState({ TLEReady: true });
-
-
       })
+
+      this.setState({ TLEReady: true });
+
 
   };
 
