@@ -10,6 +10,7 @@ import { getGroundTracks, getLatLngObj } from "tle.js";
 import { AppLoading } from 'expo';
 import { color } from 'react-native-reanimated';
 import * as Sentry from "@sentry/react-native";
+import axiosRetry from 'axios-retry';
 
 const defaultRegion = {
   latitude: 33.892668,
@@ -118,12 +119,11 @@ export default class TrackingScreen extends Component {
 
   updateSatLocation(_this) {
 
-    //checks if any of the TLE data is empty, if it has no data the sat will not update
+    //checks if the JSat TLE data is empty, if it has no data the sat will not update
 
     if (this.state.TLE_Data === undefined || this.state.TLE_Data.length == 0 || this.state.TLE_Data.length == 1 || this.state.TLE_Data.includes("")) {
       // array empty or does not exist
-      console.log('The data is empty');
-      //Sentry.captureMessage("Nepali-SAT TLE Data missing");
+      console.log('The J SAT data is empty');
     }
     else {
       const satCoord = getLatLngObj(this.state.TLE_Data);
@@ -133,8 +133,7 @@ export default class TrackingScreen extends Component {
 
     if (this.state.TLE_Data_Nep === undefined || this.state.TLE_Data_Nep.length == 0 || this.state.TLE_Data_Nep.length == 1 || this.state.TLE_Data_Nep.includes("")) {
       // array empty or does not exist
-      console.log('The data is empty');
-      //Sentry.captureMessage("Nepali-SAT TLE Data missing");
+      console.log('The N SAT data is empty');
     }
     else {
       const satCoord_Nep = getLatLngObj(this.state.TLE_Data_Nep);
@@ -145,8 +144,7 @@ export default class TrackingScreen extends Component {
 
     if (this.state.TLE_Data_Sri === undefined || this.state.TLE_Data_Sri.length == 0 || this.state.TLE_Data_Sri.length == 1 || this.state.TLE_Data_Sri.includes("")) {
       // array empty or does not exist
-      console.log('The data is empty');
-      //Sentry.captureMessage("RAAVANA-1 TLE Data missing");
+      console.log('The S SAT data is empty');
     }
     else {
       const satCoord_Sri = getLatLngObj(this.state.TLE_Data_Sri);
@@ -187,70 +185,80 @@ export default class TrackingScreen extends Component {
 
   _getTLE(_this) {
 
-    axios
-      .get('https://www.n2yo.com/rest/v1/satellite/tle/44331&apiKey=U726VS-YUR6BP-5CYTW9-4CT4')
-      .then(res => {
-        var data = res.data.tle;
+    let one = "https://www.n2yo.com/rest/v1/satellite/tle/44331&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
+    let two = "https://www.n2yo.com/rest/v1/satellite/tle/44329&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
+    let three = "https://www.n2yo.com/rest/v1/satellite/tle/44330&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
 
-        // break the textblock into an array of lines
-        var lines1 = data.split('\n');
-        var lines2 = data.split('\n');
-        // remove one line, starting at the first position
-        lines1.splice(1, 2);
-        lines2.splice(0, 1);
-        // join the array back into a single string
-        const name = ["UGUISU"];
-        var temp = name.concat(lines1);
-        var newtext = temp.concat(lines2);
+    //Allows axios to retry three times if on shoddy internet connection and they fail the inital request
+    axiosRetry(axios, { retries: 3 });
 
-        this.setState({ TLE_Data: newtext });
+    const requestOne = axios.get(one);
+    const requestTwo = axios.get(two);
+    const requestThree = axios.get(three);
 
-        this._getSatCoords();
+    //Splits the request data into the three variables to be used
+    axios.all([requestOne, requestTwo, requestThree]).then(axios.spread((...responses) => {
+      const responseOne = responses[0]
+      const responseTwo = responses[1]
+      const responesThree = responses[2]
 
+      // Grab the TLE data from the responses
+      var dataJ = responseOne.data.tle;
+      var dataN = responseTwo.data.tle;
+      var dataS = responesThree.data.tle;
 
-      })
+      // Prepare the TLE to be used by functions. Break the textblock into an array of lines
+      var lines1J = dataJ.split('\n');
+      var lines2J = dataJ.split('\n');
+      // remove one line, starting at the first position
+      lines1J.splice(1, 2);
+      lines2J.splice(0, 1);
+      // join the array back into a single string
+      const nameJ = ["UGUISU"];
+      var tempJ = nameJ.concat(lines1J);
+      var newtextJ = tempJ.concat(lines2J);
 
+      this.setState({ TLE_Data: newtextJ });
 
-    axios
-      .get('https://www.n2yo.com/rest/v1/satellite/tle/44329&apiKey=U726VS-YUR6BP-5CYTW9-4CT4')
-      .then(res => {
-        var data = res.data.tle;
+      //Get the projected orbit and ground tracks of UGUISU, the orbit is smiliar for J, N and S sats so only need to calculate for one
+      this._getSatCoords();
 
-        // break the textblock into an array of lines
-        var lines1 = data.split('\n');
-        var lines2 = data.split('\n');
-        // remove one line, starting at the first position
-        lines1.splice(1, 2);
-        lines2.splice(0, 1);
-        // join the array back into a single string
-        const name = ["NEPALISAT-1"];
-        var temp = name.concat(lines1);
-        var newtext = temp.concat(lines2);
+      ///////////////////////////////////////////////////////////////////////////
 
-        this.setState({ TLE_Data_Nep: newtext });
+      // Prepare N sat TLE. break the textblock into an array of lines
+      var lines1N = dataN.split('\n');
+      var lines2N = dataN.split('\n');
+      // remove one line, starting at the first position
+      lines1N.splice(1, 2);
+      lines2N.splice(0, 1);
+      // join the array back into a single string
+      const nameN = ["NEPALISAT-1"];
+      var tempN = nameN.concat(lines1N);
+      var newtextN = tempN.concat(lines2N);
 
+      this.setState({ TLE_Data_Nep: newtextN });
 
-      })
+      ///////////////////////////////////////////////////////////////////////////
 
-    axios
-      .get('https://www.n2yo.com/rest/v1/satellite/tle/44330&apiKey=U726VS-YUR6BP-5CYTW9-4CT4')
-      .then(res => {
-        var data = res.data.tle;
+      // Prepare S sat TLE. break the textblock into an array of lines
+      var lines1S = dataS.split('\n');
+      var lines2S = dataS.split('\n');
+      // remove one line, starting at the first position
+      lines1S.splice(1, 2);
+      lines2S.splice(0, 1);
+      // join the array back into a single string
+      const nameS = ["RAAVANA-1"];
+      var tempS = nameS.concat(lines1S);
+      var newtextS = tempS.concat(lines2S);
 
-        // break the textblock into an array of lines
-        var lines1 = data.split('\n');
-        var lines2 = data.split('\n');
-        // remove one line, starting at the first position
-        lines1.splice(1, 2);
-        lines2.splice(0, 1);
-        // join the array back into a single string
-        const name = ["RAAVANA-1"];
-        var temp = name.concat(lines1);
-        var newtext = temp.concat(lines2);
+      this.setState({ TLE_Data_Sri: newtextS });
 
-        this.setState({ TLE_Data_Sri: newtext });
+    })).catch(errors => {
+      // react on errors.
+      console.log(errors);
+      Sentry.captureException(errors);
 
-      })
+    })
 
     this.setState({ TLEReady: true });
 
