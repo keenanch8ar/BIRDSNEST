@@ -380,7 +380,7 @@ export default class TrackingScreen extends Component {
               latitude: this.state.satCoord.lat,
               longitude: this.state.satCoord.lng
             }}
-            title="UGUISU"
+            title="NEPALISAT-1"
             image={isAndroid ? satMarkerImage_android : null}
             opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0) ? 1.0 : 0}
           >
@@ -393,7 +393,7 @@ export default class TrackingScreen extends Component {
               latitude: this.state.satCoord_Nep.lat,
               longitude: this.state.satCoord_Nep.lng
             }}
-            title="NEPALISAT-1"
+            title="RAAVANA-1"
             image={isAndroid ? satMarker2Image_android : null}
             opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0) ? 1.0 : 0}
           >
@@ -406,7 +406,7 @@ export default class TrackingScreen extends Component {
               latitude: this.state.satCoord_Sri.lat,
               longitude: this.state.satCoord_Sri.lng
             }}
-            title="RAAVANA-1"
+            title="UGUISU"
             image={isAndroid ? satMarker3Image_android : null}
             opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0) ? 1.0 : 0}
           >
