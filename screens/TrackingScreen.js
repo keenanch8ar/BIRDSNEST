@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MapView, { AnimatedRegion, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions} from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Image } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
@@ -22,7 +22,7 @@ const defaultRegion = {
 const AUDIBLE_CIRCLE_RADIUS_M = 1000 * 2000;
 
 const TLEStr = '1998-067PA\n1 43552U 98067PA  18203.24282627  .00006515  00000-0  10313-3 0  9994\n2 43552  51.6412 203.9371 0005837 350.6408   9.4476 15.54781596  1354'
-const testingaxious = ["UGUISU","",""]
+const testingaxious = ["UGUISU", "", ""]
 const tleArr = [
   'ISS (ZARYA)',
   '1 25544U 98067A   17206.18396726  .00001961  00000-0  36771-4 0  9993',
@@ -39,6 +39,9 @@ const satMarkerImage_android = require('../assets/images/birds3_gold.png');
 const satMarker2Image_android = require('../assets/images/birds3_white.png');
 const satMarker3Image_android = require('../assets/images/birds3_red.png');
 
+const satMarkerImage = require('../assets/images/equisat_logo_white.png');
+const userMarkerImage = require('../assets/images/user_location_icon.png');
+
 
 export default class TrackingScreen extends Component {
 
@@ -48,10 +51,10 @@ export default class TrackingScreen extends Component {
     this.state = {
 
       region: defaultRegion,
-      mapMargin:1,
+      mapMargin: 1,
       mapLat: 0,
       mapLong: 0,
-      curSatInfo: {lat: 0, lng: 0, height: 0, velocity: 0},
+      curSatInfo: { lat: 0, lng: 0, height: 0, velocity: 0 },
       lockedToSatLoc: true,
 
       userLat: 0,
@@ -61,33 +64,33 @@ export default class TrackingScreen extends Component {
       gotUserLoc: false,
       showUserLoc: false,
       showUserLocMarker: false,
-      userNextPass: {max_alt: 0, max_alt_time: 0, rise_azimuth: 0, rise_time: 0, set_azimuth: 0, set_time: 0},
+      userNextPass: { max_alt: 0, max_alt_time: 0, rise_azimuth: 0, rise_time: 0, set_azimuth: 0, set_time: 0 },
       userNextPassError: true,
 
       searchText: "",
       searchLat: 0,
       searchLong: 0,
-      searchNextPass: {max_alt: 0, max_alt_time: 0, rise_azimuth: 0, rise_time: 0, set_azimuth: 0, set_time: 0},
+      searchNextPass: { max_alt: 0, max_alt_time: 0, rise_azimuth: 0, rise_time: 0, set_azimuth: 0, set_time: 0 },
       searchNextPassError: true,
       showSearchLocMarker: false,
       searchErrorSnackbarVisible: false,
-      
+
       TLE_Data: [],
       TLE_Data_Nep: [],
       TLE_Data_Sri: [],
 
       TLE_Ready: false,
 
-      satCoord: {lat: 0, lng: 0},
+      satCoord: { lat: 0, lng: 0 },
       satCoords: [],
       satCoords2: [],
       satCoords3: [],
 
-      satCoord_Nep: {lat: 0, lng: 0},
+      satCoord_Nep: { lat: 0, lng: 0 },
       satCoords_Nep: [],
       satCoords2_Nep: [],
 
-      satCoord_Sri: {lat: 0, lng: 0},
+      satCoord_Sri: { lat: 0, lng: 0 },
       satCoords_Sri: [],
       satCoords2_Sri: [],
 
@@ -158,7 +161,7 @@ export default class TrackingScreen extends Component {
     this._getTLE(); //get sat location
     var _this = this;
     //get sat location every second
-    this.satUpdateAsyncID = setInterval(function () {_this.updateSatLocation(_this); }, 2000);
+    this.satUpdateAsyncID = setInterval(function () { _this.updateSatLocation(_this); }, 2000);
   }
 
   componentWillUnmount() {
@@ -269,10 +272,10 @@ export default class TrackingScreen extends Component {
 
     const orbitLines = await getGroundTracks({
       tle: this.state.TLE_Data,
-    
+
       // Resolution of plotted points.  Defaults to 1000 (plotting a point once for every second).
       stepMS: 1000,
-    
+
       // Returns points in [lng, lat] order when true, and [lng, lat] order when false.
       isLngLatFormat: false
     });
@@ -281,20 +284,20 @@ export default class TrackingScreen extends Component {
     var satCoords2 = [];
     var satCoords3 = [];
     for (var i = 0; i < orbitLines[0].length; i++) {
-      satCoords = [ ...satCoords, {latitude: orbitLines[0][i][0], longitude: orbitLines[0][i][1]}];
+      satCoords = [...satCoords, { latitude: orbitLines[0][i][0], longitude: orbitLines[0][i][1] }];
     }
     for (var i = 0; i < orbitLines[1].length; i++) {
-      satCoords2 = [ ...satCoords2, {latitude: orbitLines[1][i][0], longitude: orbitLines[1][i][1]}];
+      satCoords2 = [...satCoords2, { latitude: orbitLines[1][i][0], longitude: orbitLines[1][i][1] }];
     }
     for (var i = 0; i < orbitLines[2].length; i++) {
-      satCoords3 = [ ...satCoords3, {latitude: orbitLines[2][i][0], longitude: orbitLines[2][i][1]}];
+      satCoords3 = [...satCoords3, { latitude: orbitLines[2][i][0], longitude: orbitLines[2][i][1] }];
     }
 
     this.setState({ satCoords });
     this.setState({ satCoords2 });
     this.setState({ satCoords3 });
 
-    
+
   };
 
 
@@ -309,7 +312,7 @@ export default class TrackingScreen extends Component {
     }
     this.map.animateToRegion(region);
     var _this = this;
-    setTimeout(function(){ _this.userLocMarker.showCallout(); }, 1000);
+    setTimeout(function () { _this.userLocMarker.showCallout(); }, 1000);
   }
 
   makeSearchMarker(location) {
@@ -317,7 +320,7 @@ export default class TrackingScreen extends Component {
     var searchLong = location.longitude;
     this.setState({ searchLat });
     this.setState({ searchLong });
-    this.setState({ showSearchLocMarker: true})
+    this.setState({ showSearchLocMarker: true })
     let region = {
       latitude: searchLat,
       longitude: searchLong,
@@ -431,6 +434,7 @@ export default class TrackingScreen extends Component {
             strokeWidth={2}
             strokeColor="#004a92"
             lineJoin="round" />
+
 
 
         </MapView>

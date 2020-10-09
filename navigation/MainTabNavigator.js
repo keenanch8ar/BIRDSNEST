@@ -25,7 +25,7 @@ const TrackingStack = createStackNavigator(
 TrackingStack.navigationOptions = {
   tabBarLabel: 'Tracking',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={ Platform.OS === 'ios' ? `ios-information-circle${focused ? '' : '-outline'}` : 'md-compass' }/>
+    <TabBarIcon focused={focused} name={ Platform.OS === 'ios' ? 'ios-compass': 'md-compass' }/>
   ),
 };
 
@@ -41,7 +41,7 @@ const CADStack = createStackNavigator(
 CADStack.navigationOptions = {
   tabBarLabel: 'CAD Model',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-cube'} />
+    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-cube' : 'md-cube'} />
   ),
 };
 
@@ -57,7 +57,7 @@ const DataStack = createStackNavigator(
 DataStack.navigationOptions = {
   tabBarLabel: 'Data',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-podium'} />
+    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-analytics' : 'md-podium'} />
   ),
 };
 
@@ -74,7 +74,7 @@ const GalleryStack = createStackNavigator(
 GalleryStack.navigationOptions = {
   tabBarLabel: 'Gallery',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'folder-multiple-image' : 'md-images'} />
+    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-albums' : 'md-images'} />
   ),
 };
 
