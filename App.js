@@ -41,8 +41,14 @@ export default function App(props) {
 async function loadResourcesAsync() {
   await Promise.all([
     Asset.loadAsync([
-      require('./assets/images/robot-dev.png'),
-      require('./assets/images/robot-prod.png'),
+      require('./assets/images/birds3_gold.png'),
+      require('./assets/images/birds3_white.png'),
+      require('./assets/images/birds3_red.png'),
+      require('./assets/images/Gold_BIRDS3_IOS.png'),
+      require('./assets/images/White_BIRDS3_IOS.png'),
+      require('./assets/images/Red_BIRDS3_IOS.png'),
+      require('./assets/images/user_location_icon.png'),
+      require('./assets/images/user_location_icon_android.png'),
     ]),
     Font.loadAsync({
       // This is the font that we are using for our tab bar

@@ -39,7 +39,9 @@ const satMarkerImage_android = require('../assets/images/birds3_gold.png');
 const satMarker2Image_android = require('../assets/images/birds3_white.png');
 const satMarker3Image_android = require('../assets/images/birds3_red.png');
 
-const satMarkerImage = require('../assets/images/equisat_logo_white.png');
+const satMarkerImage_gold = require('../assets/images/Gold_BIRDS3_IOS.png');
+const satMarkerImage_red = require('../assets/images/Red_BIRDS3_IOS.png');
+const satMarkerImage_white = require('../assets/images/White_BIRDS3_IOS.png');
 const userMarkerImage = require('../assets/images/user_location_icon.png');
 
 
@@ -188,9 +190,9 @@ export default class TrackingScreen extends Component {
 
   _getTLE(_this) {
 
-    let one = "https://www.n2yo.com/rest/v1/satellite/tle/44331&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
-    let two = "https://www.n2yo.com/rest/v1/satellite/tle/44329&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
-    let three = "https://www.n2yo.com/rest/v1/satellite/tle/44330&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
+    let one = "https://api.n2yo.com/rest/v1/satellite/tle/44331&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
+    let two = "https://api.n2yo.com/rest/v1/satellite/tle/44329&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
+    let three = "https://api.n2yo.com/rest/v1/satellite/tle/44330&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
 
     //Allows axios to retry three times if on shoddy internet connection and they fail the inital request
     axiosRetry(axios, { retries: 3 });
@@ -387,7 +389,7 @@ export default class TrackingScreen extends Component {
             image={isAndroid ? satMarkerImage_android : null}
             opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0) ? 1.0 : 0}
           >
-            {isAndroid ? null : <Image source={satMarkerImage} style={{ width: 40, height: 40 }} resizeMode="contain" />}
+            {isAndroid ? null : <Image source={satMarkerImage_gold} style={{ width: 40, height: 40 }} resizeMode="contain" />}
           </MapView.Marker.Animated>
 
           <MapView.Marker.Animated
@@ -400,7 +402,7 @@ export default class TrackingScreen extends Component {
             image={isAndroid ? satMarker2Image_android : null}
             opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0) ? 1.0 : 0}
           >
-            {isAndroid ? null : <Image source={satMarkerImage} style={{ width: 40, height: 40 }} resizeMode="contain" />}
+            {isAndroid ? null : <Image source={satMarkerImage_white} style={{ width: 40, height: 40 }} resizeMode="contain" />}
           </MapView.Marker.Animated>
 
           <MapView.Marker.Animated
@@ -413,7 +415,7 @@ export default class TrackingScreen extends Component {
             image={isAndroid ? satMarker3Image_android : null}
             opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0) ? 1.0 : 0}
           >
-            {isAndroid ? null : <Image source={satMarkerImage} style={{ width: 40, height: 40 }} resizeMode="contain" />}
+            {isAndroid ? null : <Image source={satMarkerImage_red} style={{ width: 40, height: 40 }} resizeMode="contain" />}
           </MapView.Marker.Animated>
 
           <MapView.Polyline
