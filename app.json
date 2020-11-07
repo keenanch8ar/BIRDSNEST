@@ -8,11 +8,11 @@
       "ios",
       "android"
     ],
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
-    "icon": "./assets/images/BIRDSNEST_Logo_White.png",
+    "icon": "./assets/images/playstore.png",
     "splash": {
-      "image": "./assets/images/BIRDSNEST_Splash.png",
+      "image": "./assets/images/splash.png",
       "resizeMode": "cover",
       "backgroundColor": "#000000"
     },
@@ -27,7 +27,7 @@
       "config": {
         "googleMapsApiKey": "AIzaSyBlTs37IBfLm2i3-GcGeXolM0vhKJNi5mo"
       },
-      "icon": "./assets/images/BIRDSNEST_appstore_logo.png",
+      "icon": "./assets/images/appstore.png",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "We need to know your current location to determine the satellite's relative position to you. Do you allow us to use location service on this device?"
       },
@@ -52,7 +52,7 @@
           "apiKey": "AIzaSyCyIS4_ypDKZGBBpITlrsh1QeIVp_vRA5A"
         }
       },
-      "versionCode": 4,
+      "versionCode": 5,
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION"
