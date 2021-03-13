@@ -38,10 +38,12 @@ const userMarkerImage_android = require('../assets/images/user_location_icon_and
 const satMarkerImage_android = require('../assets/images/birds3_gold.png');
 const satMarker2Image_android = require('../assets/images/birds3_white.png');
 const satMarker3Image_android = require('../assets/images/birds3_red.png');
+const satMarker4Image_android = require('../assets/images/birds4_J.png');
 
 const satMarkerImage_gold = require('../assets/images/Gold_BIRDS3_IOS.png');
 const satMarkerImage_red = require('../assets/images/Red_BIRDS3_IOS.png');
 const satMarkerImage_white = require('../assets/images/White_BIRDS3_IOS.png');
+const satMarkerImage_BIRDS4J= require('../assets/images/BIRDS4_J_IOS.png');
 const userMarkerImage = require('../assets/images/user_location_icon.png');
 
 
@@ -80,6 +82,7 @@ export default class TrackingScreen extends Component {
       TLE_Data: [],
       TLE_Data_Nep: [],
       TLE_Data_Sri: [],
+      TLE_Data_BIRDS4_J: [],
 
       TLE_Ready: false,
 
@@ -95,6 +98,8 @@ export default class TrackingScreen extends Component {
       satCoord_Sri: { lat: 0, lng: 0 },
       satCoords_Sri: [],
       satCoords2_Sri: [],
+
+      satCoord_BIRDS4_J: { lat: 0, lng: 0 },
 
 
     };
@@ -156,6 +161,16 @@ export default class TrackingScreen extends Component {
       this.setState({ satCoord_Sri });
     }
 
+
+    if (this.state.TLE_Data_BIRDS4_J === undefined || this.state.TLE_Data_BIRDS4_J.length == 0 || this.state.TLE_Data_BIRDS4_J.length == 1 || this.state.TLE_Data_BIRDS4_J.includes("")) {
+      // array empty or does not exist
+      console.log('The BIRDS-4 J SAT data is empty');
+    }
+    else {
+      const satCoord_BIRDS4_J = getLatLngObj(this.state.TLE_Data_BIRDS4_J);
+      this.setState({ satCoord_BIRDS4_J });
+    }
+
   }
 
   componentDidMount() {
@@ -193,6 +208,7 @@ export default class TrackingScreen extends Component {
     let one = "https://api.n2yo.com/rest/v1/satellite/tle/44331&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
     let two = "https://api.n2yo.com/rest/v1/satellite/tle/44329&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
     let three = "https://api.n2yo.com/rest/v1/satellite/tle/44330&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
+    let four = "https://api.n2yo.com/rest/v1/satellite/tle/25544&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
 
     //Allows axios to retry three times if on shoddy internet connection and they fail the inital request
     axiosRetry(axios, { retries: 3 });
@@ -200,17 +216,20 @@ export default class TrackingScreen extends Component {
     const requestOne = axios.get(one);
     const requestTwo = axios.get(two);
     const requestThree = axios.get(three);
+    const requestFour = axios.get(four);
 
     //Splits the request data into the three variables to be used
-    axios.all([requestOne, requestTwo, requestThree]).then(axios.spread((...responses) => {
+    axios.all([requestOne, requestTwo, requestThree, requestFour]).then(axios.spread((...responses) => {
       const responseOne = responses[0]
       const responseTwo = responses[1]
-      const responesThree = responses[2]
+      const responseThree = responses[2]
+      const responseFour = responses[3]
 
       // Grab the TLE data from the responses
       var dataJ = responseOne.data.tle;
       var dataN = responseTwo.data.tle;
-      var dataS = responesThree.data.tle;
+      var dataS = responseThree.data.tle;
+      var dataBIRDS4_J = responseFour.data.tle;
 
       // Prepare the TLE to be used by functions. Break the textblock into an array of lines
       var lines1J = dataJ.split('\n');
@@ -257,6 +276,22 @@ export default class TrackingScreen extends Component {
       var newtextS = tempS.concat(lines2S);
 
       this.setState({ TLE_Data_Sri: newtextS });
+
+
+            ///////////////////////////////////////////////////////////////////////////
+
+      // Prepare BIRDS4 J sat TLE. break the textblock into an array of lines
+      var lines1_4J = dataBIRDS4_J.split('\n');
+      var lines2_4J = dataBIRDS4_J.split('\n');
+      // remove one line, starting at the first position
+      lines1_4J.splice(1, 2);
+      lines2_4J.splice(0, 1);
+      // join the array back into a single string
+      const name_4J = ["TSURU"];
+      var temp_4J = name_4J.concat(lines1_4J);
+      var newtext_4J = temp_4J.concat(lines2_4J);
+
+      this.setState({ TLE_Data_BIRDS4_J: newtext_4J });
 
     })).catch(errors => {
       // react on errors.
@@ -416,6 +451,19 @@ export default class TrackingScreen extends Component {
             opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0) ? 1.0 : 0}
           >
             {isAndroid ? null : <Image source={satMarkerImage_red} style={{ width: 40, height: 40 }} resizeMode="contain" />}
+          </MapView.Marker.Animated>
+
+          <MapView.Marker.Animated
+            ref={ref => { this.satMarker = ref; }}
+            coordinate={{
+              latitude: this.state.satCoord_BIRDS4_J.lat,
+              longitude: this.state.satCoord_BIRDS4_J.lng
+            }}
+            title="BIRDS-4 SATS"
+            image={isAndroid ? satMarker4Image_android : null}
+            opacity={(this.state.satCoord.latitude != 0 || this.state.satCoord.latitude != 0) ? 1.0 : 0}
+          >
+            {isAndroid ? null : <Image source={satMarkerImage_BIRDS4J} style={{ width: 40, height: 40 }} resizeMode="contain" />}
           </MapView.Marker.Animated>
 
           <MapView.Polyline

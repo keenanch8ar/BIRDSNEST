@@ -27,7 +27,7 @@
       "config": {
         "googleMapsApiKey": "AIzaSyBlTs37IBfLm2i3-GcGeXolM0vhKJNi5mo"
       },
-      "icon": "./assets/images/appstore.png",
+      "icon": "./assets/images/Appstore_logo_black.png",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "We need to know your current location to determine the satellite's relative position to you. Do you allow us to use location service on this device?"
       },

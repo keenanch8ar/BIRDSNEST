@@ -52,6 +52,7 @@ export default class DataScreen extends Component {
 		};
 
 
+
 	} 
 
 
@@ -105,7 +106,7 @@ export default class DataScreen extends Component {
 								</View>
 								<View style={styles.rowContainerLeft} >
 									<Icon name="radio-tower" size={20} style={styles.icon} />
-									<Text style={styles.cardText}>BIRDS-3 (UGUISU)</Text>
+									<Text style={styles.cardText}>BIRDS-3 (RAAVANA-1)</Text>
 								</View>
 								<View style={styles.rowContainerLeft} >
 									<Text style={styles.cardText}>Callsign: </Text>
