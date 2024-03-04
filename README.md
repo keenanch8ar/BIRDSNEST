@@ -29,10 +29,11 @@ Once the app is installed and running, you can:
 
 ## Screenshots
 
-![Tracking](https://i.imgur.com/fTG9ffg.jpg)
-![Gallery](https://i.imgur.com/U0J6aEu.jpg)
-![CAD](https://i.imgur.com/wt9Gkrs.jpg)
-![Data](https://i.imgur.com/EH68FER.jpg)
+<img src="https://i.imgur.com/fTG9ffg.jpg" alt="Tracking" style="width: 300px; height: 500px; float: left; margin-right: 20px;">
+<img src="https://i.imgur.com/U0J6aEu.jpg" alt="Gallery" style="width: 300px; height: 500px; float: right; margin-left: 20px;">
+<img src="https://i.imgur.com/wt9Gkrs.jpg" alt="CAD" style="width: 300px; height: 500px; float: left; margin-right: 20px;">
+<img src="https://i.imgur.com/EH68FER.jpg" alt="Data" style="width: 300px; height: 500px; float: right; margin-left: 20px;">
+
 
 ## License
 
