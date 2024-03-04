@@ -1,4 +1,4 @@
-![BIRDSNEST Logo](https://imgur.com/a/os6K2qA)
+![BIRDSNEST Logo](https://i.imgur.com/3nsJqfy.jpg)
 
 # BIRDSNEST
 
@@ -27,21 +27,12 @@ Once the app is installed and running, you can:
 - Access telemetry data to monitor the satellite's status.
 - View RGB image captures collected by the satellite.
 
-## Contributing
-
-Contributions to BIRDSNEST are welcome! If you'd like to contribute, please follow these guidelines:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-feature`).
-3. Make your changes.
-4. Commit your changes (`git commit -am 'Add new feature'`).
-5. Push to the branch (`git push origin feature/your-feature`).
-6. Create a new Pull Request.
-
 ## Screenshots
 
-![Screenshot 1](https://www.example.com/path/to/screenshot1.png)
-![Screenshot 2](https://www.example.com/path/to/screenshot2.png)
+![Tracking](https://i.imgur.com/fTG9ffg.jpg)
+![Gallery](https://i.imgur.com/U0J6aEu.jpg)
+![CAD](https://i.imgur.com/wt9Gkrs.jpg)
+![Data](https://i.imgur.com/EH68FER.jpg)
 
 ## License
 
