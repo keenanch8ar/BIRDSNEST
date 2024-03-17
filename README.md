@@ -15,7 +15,7 @@ BIRDSNEST is a mobile application developed using React Native for Android and i
 
 To install and run BIRDSNEST on your device, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your/repository.git`
+1. Clone the repository: `https://github.com/keenanch8ar/BIRDSNEST.git`
 2. Install dependencies: `npm install`
 3. Run the app: `npx react-native run-android` or `npx react-native run-ios`
 
