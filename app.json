@@ -25,7 +25,7 @@
     "ios": {
       "bundleIdentifier": "com.kyutech.birdsnestproject.ios",
       "config": {
-        "googleMapsApiKey": "AIzaSyBlTs37IBfLm2i3-GcGeXolM0vhKJNi5mo"
+        "googleMapsApiKey": "${GOOGLE_MAPS_API_KEY_IOS}"
       },
       "icon": "./assets/images/Appstore_logo_black.png",
       "infoPlist": {
@@ -40,7 +40,7 @@
           "config": {
             "organization": "kyutech",
             "project": "birdsnest",
-            "authToken": "559ebef25f8c4db2bce6a392c7c6b006c25aa964584b4c0391d5317d54894c5c"
+            "authToken": "${SENTRY_AUTH_TOKEN}"
           }
         }
       ]
@@ -49,7 +49,7 @@
       "package": "com.kyutech.birdsnestproject",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyCyIS4_ypDKZGBBpITlrsh1QeIVp_vRA5A"
+          "apiKey": "${GOOGLE_MAPS_API_KEY_ANDROID}"
         }
       },
       "versionCode": 5,

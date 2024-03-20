@@ -46,6 +46,9 @@ const satMarkerImage_white = require('../assets/images/White_BIRDS3_IOS.png');
 const satMarkerImage_BIRDS4J= require('../assets/images/BIRDS4_J_IOS.png');
 const userMarkerImage = require('../assets/images/user_location_icon.png');
 
+// Import API keys from constants
+import { N2YO_API_KEY } from './constants/apiKeys';
+
 
 export default class TrackingScreen extends Component {
 
@@ -205,10 +208,11 @@ export default class TrackingScreen extends Component {
 
   _getTLE(_this) {
 
-    let one = "https://api.n2yo.com/rest/v1/satellite/tle/44331&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
-    let two = "https://api.n2yo.com/rest/v1/satellite/tle/44329&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
-    let three = "https://api.n2yo.com/rest/v1/satellite/tle/44330&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
-    let four = "https://api.n2yo.com/rest/v1/satellite/tle/25544&apiKey=U726VS-YUR6BP-5CYTW9-4CT4"
+    let one = `https://api.n2yo.com/rest/v1/satellite/tle/44331&apiKey=${N2YO_API_KEY}`;
+    let two = `https://api.n2yo.com/rest/v1/satellite/tle/44329&apiKey=${N2YO_API_KEY}`;
+    let three = `https://api.n2yo.com/rest/v1/satellite/tle/44330&apiKey=${N2YO_API_KEY}`;
+    let four = `https://api.n2yo.com/rest/v1/satellite/tle/25544&apiKey=${N2YO_API_KEY}`;
+
 
     //Allows axios to retry three times if on shoddy internet connection and they fail the inital request
     axiosRetry(axios, { retries: 3 });

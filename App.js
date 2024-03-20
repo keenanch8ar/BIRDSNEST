@@ -7,7 +7,11 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Sentry from 'sentry-expo';
 
 import AppNavigator from './navigation/AppNavigator';
+require('dotenv').config();
 
+const googleMapsApiKeyIOS = process.env.GOOGLE_MAPS_API_KEY_IOS;
+const googleMapsApiKeyAndroid = process.env.GOOGLE_MAPS_API_KEY_ANDROID;
+const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
 
 
 export default function App(props) {
